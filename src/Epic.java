@@ -1,31 +1,37 @@
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Epic extends Task{
-    private ArrayList<SubTask> subTasks;
+    private ArrayList<Integer> subTasksId;
     public Epic(String name, String description) {
         this.taskID = 0;
         this.name = name;
         this.description = description;
-        this.subTasks = new ArrayList<>();
+        this.status = "NEW";
+        this.subTasksId = new ArrayList<>();
     }
 
-    public void addNewSubTask(SubTask subTask){
-        this.subTasks.add(subTask);
+    public void addNewSubTask(Integer subTaskId){
+        this.subTasksId.add(subTaskId);
     }
 
-    public void removeSubTask(SubTask subTask){
-        this.subTasks.remove(subTask);
+    public void removeSubTask(Integer subTaskId){
+        this.subTasksId.remove(subTaskId);
     }
 
-    public ArrayList<SubTask> getSubTasksList(){
-        return this.subTasks;
+    public ArrayList<Integer> getSubTasksList(){
+        return this.subTasksId;
     }
 
     public void setStatus(String status){
         this.status = status;
     }
 
-    public boolean isSubTaskExists(SubTask subTask){
-        return this.subTasks.contains(subTask);
+    public boolean isSubTaskExists(int subTaskId){
+        return this.subTasksId.contains(subTaskId);
+    }
+    @Override
+    public String toString() {
+        return "Task(ID=" + this.taskID + ", name=" + this.name + ", description.length=" + description.length() + ", status=" + this.status+", subTasksId="+ Arrays.toString(subTasksId.toArray());
     }
 }

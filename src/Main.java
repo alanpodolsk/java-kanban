@@ -8,9 +8,9 @@ public class Main {
         Task task2 = new Task("Купить слона","Купить слона и не сойти с ума","NEWS");
         Epic epic1 = new Epic("Переехать в Ботсвану","Купить билеты и собрать чемодан");
         Epic epic2 = new Epic("Убраться в комнате","Пропылесосить комнату");
-        SubTask sub1 = new SubTask("Купить билеты на самолет","Купить билеты на рейс в Ботсвану", "NEW", epic1.getTaskID());
-        SubTask sub2 = new SubTask("Сесть в самолет","Сесть в самолет и улететь в Ботсвану","NEW", epic1.getTaskID());
-        SubTask sub3 = new SubTask("Пропылесосить комнату","Включить пылесос и пропылесосить комнату","NEW",epic2.getTaskID());
+        SubTask sub1 = new SubTask("Купить билеты на самолет","Купить билеты на рейс в Ботсвану", "NEW",1);
+        SubTask sub2 = new SubTask("Сесть в самолет","Сесть в самолет и улететь в Ботсвану","NEW", 1);
+        SubTask sub3 = new SubTask("Пропылесосить комнату","Включить пылесос и пропылесосить комнату","NEW",2);
 
         //Добавляем объекты в БД
 
@@ -27,5 +27,19 @@ public class Main {
         manager.createSubTask(sub1);
         manager.createSubTask(sub2);
         manager.createSubTask(sub3);
+        manager.printAllSubTasks();
+        manager.printAllEpics();
+        sub1.setStatus("IN_PROGRESS");
+        manager.updateSubTask(sub1);
+        sub2.setStatus("DONE");
+        sub3.setStatus("DONE");
+        manager.updateSubTask(sub2);
+        manager.updateSubTask(sub3);
+        manager.printAllSubTasks();
+        manager.printAllEpics();
+        manager.deleteEpic(epic1.getTaskID());
+        manager.printAllEpics();
+        manager.removeAllTasks();
+        manager.printAllTasks();
     }
 }
