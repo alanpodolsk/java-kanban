@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class Epic extends Task{
     private ArrayList<Integer> subTasksId;
@@ -19,12 +20,8 @@ public class Epic extends Task{
         this.subTasksId.remove(subTaskId);
     }
 
-    public ArrayList<Integer> getSubTasksList(){
+    public List<Integer> getSubTasksList(){
         return this.subTasksId;
-    }
-
-    public void setStatus(String status){
-        this.status = status;
     }
 
     public boolean isSubTaskExists(int subTaskId){
@@ -32,6 +29,6 @@ public class Epic extends Task{
     }
     @Override
     public String toString() {
-        return "Task(ID=" + this.taskID + ", name=" + this.name + ", description.length=" + description.length() + ", status=" + this.status+", subTasksId="+ Arrays.toString(subTasksId.toArray());
+        return "Epic(ID=" + this.taskID + ", name=" + this.name + ", description.length=" + description.length() + ", status=" + this.status+", subTasksId="+ Arrays.toString(subTasksId.toArray());
     }
 }

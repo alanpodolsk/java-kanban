@@ -1,13 +1,12 @@
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 public class Manager {
 
     HashMap<Integer, Task> taskMap = new HashMap<>();
     HashMap<Integer, Epic> epicMap = new HashMap<>();
     HashMap<Integer, SubTask> subTaskMap = new HashMap<>();
-    String[] validStatuses = {"NEW", "IN_PROGRESS", "DONE"};
+    String[] validStatuses = {"NEW", "IN_PROGRESS", "DONE"}; //в комментариях рекомендовано вынести в Enum, но поскольку сам Enum - это тема следующего спринта, я исправлю этот момент в ТЗ 4
 
 
     //Работа с Task
@@ -31,7 +30,7 @@ public class Manager {
         if (statusValidation(task.getStatus())) {
             taskMap.put(taskId, task);
         } else {
-            System.out.println("Невозможно записать в систему задачу " + task.toString() + " - статус не прошел валидацию");
+            System.out.println("Невозможно записать в систему задачу " + task + " - статус не прошел валидацию");
         }
     }
 
@@ -41,20 +40,20 @@ public class Manager {
             return;
         }
         int taskId = task.getTaskID();
-        if (taskMap.containsKey(taskId) == false) {
-            System.out.println("Невозможно обновить запись " + task.toString() + " - данный ID отсутствует в базе");
+        if (!taskMap.containsKey(taskId)) {
+            System.out.println("Невозможно обновить запись " + task + " - данный ID отсутствует в базе");
             return;
         }
 
         if (statusValidation(task.getStatus())) {
             taskMap.put(taskId, task);
         } else {
-            System.out.println("Невозможно записать в систему задачу " + task.toString() + " - статус не прошел валидацию");
+            System.out.println("Невозможно записать в систему задачу " + task + " - статус не прошел валидацию");
         }
     }
 
     public void deleteTask(int taskId) {
-        if (taskMap.containsKey(taskId) == false) {
+        if (!taskMap.containsKey(taskId)) {
             System.out.println("Невозможно удалить запись №" + taskId + " - данный ID отсутствует в базе");
             return;
         }
@@ -85,24 +84,32 @@ public class Manager {
             return;
         }
         int epicId = epic.getTaskID();
-        if (taskMap.containsKey(epicId) == false) {
-            System.out.println("Невозможно обновить запись " + epic.toString() + " - данный ID отсутствует в базе");
+        if (!epicMap.containsKey(epicId)) {
+            System.out.println("Невозможно обновить запись " + epic + " - данный ID отсутствует в базе");
             return;
         }
             epicMap.put(epicId, epic);
     }
 
     public void deleteEpic(int epicId){
-        if (epicMap.containsKey(epicId) == false) {
+        if (!epicMap.containsKey(epicId)) {
             System.out.println("Невозможно удалить запись №" + epicId + " - данный ID отсутствует в базе");
             return;
         }
+        Epic epic = epicMap.get(epicId);
+        List<Integer> subTaskList = epic.getSubTasksList();
+        for (Integer key : subTaskList) {
+            deleteSubTask(key);
+            }
         epicMap.remove(epicId);
-
     }
 
     public void removeAllEpics() {
-        epicMap.clear();
+        Object[] epicIdList = epicMap.keySet().toArray();
+
+        for (Object epicId : epicIdList){
+            deleteEpic((Integer)epicId);
+        }
     }
 
     public void printAllEpics() {
@@ -119,7 +126,7 @@ public class Manager {
     }
 
     public void updateEpicStatus(Epic epic){
-        ArrayList<Integer> subTasksList = epic.getSubTasksList();
+        List<Integer> subTasksList = epic.getSubTasksList();
         if (subTasksList.size() == 0){
             epic.setStatus("NEW");
             return;
@@ -133,8 +140,8 @@ public class Manager {
             if(!subTasksList.contains(key)){
                 continue;
             }
-            SubTask actiualSubTask = subTaskMap.get(key);
-            switch (actiualSubTask.getStatus()){
+            SubTask actualSubTask = subTaskMap.get(key);
+            switch (actualSubTask.getStatus()){
                 case "NEW":
                     newSubs++;
                     break;
@@ -175,7 +182,7 @@ public class Manager {
             updateEpicStatus(epic);
             updateEpic(epic);
         } else {
-            System.out.println("Невозможно записать в систему задачу " + subTask.toString() + " - статус не прошел валидацию либо указан некорректный ID эпика");
+            System.out.println("Невозможно записать в систему задачу " + subTask + " - статус не прошел валидацию либо указан некорректный ID эпика");
         }
 
 
@@ -184,7 +191,7 @@ public class Manager {
         int epicId = subTask.getEpicId();
         int subTaskId = subTask.taskID;
         Epic epic = epicMap.get(epicId);
-        if(epic.isSubTaskExists(subTaskId) == false){
+        if(!epic.isSubTaskExists(subTaskId)){
             epic.addNewSubTask(subTaskId);
         }
     }
@@ -195,8 +202,8 @@ public class Manager {
             return;
         }
         int taskId = subTask.getTaskID();
-        if (subTaskMap.containsKey(taskId) == false) {
-            System.out.println("Невозможно обновить запись " + subTask.toString() + " - данный ID отсутствует в базе");
+        if (!subTaskMap.containsKey(taskId)) {
+            System.out.println("Невозможно обновить запись " + subTask + " - данный ID отсутствует в базе");
             return;
         }
 
@@ -207,12 +214,12 @@ public class Manager {
             updateEpicStatus(epic);
             updateEpic(epic);
         } else {
-            System.out.println("Невозможно записать в систему задачу " + subTask.toString() + " - статус не прошел валидацию");
+            System.out.println("Невозможно записать в систему задачу " + subTask + " - статус не прошел валидацию");
         }
     }
 
     public void deleteSubTask(int subTaskId) {
-        if (subTaskMap.containsKey(subTaskId) == false) {
+        if (!subTaskMap.containsKey(subTaskId)) {
             System.out.println("Невозможно удалить запись №" + subTaskId + " - данный ID отсутствует в базе");
             return;
         }
@@ -227,6 +234,8 @@ public class Manager {
         Epic epic = epicMap.get(epicId);
         if(epic.isSubTaskExists(subTaskId)){
             epic.removeSubTask(subTaskId);
+            updateEpicStatus(epic);
+            updateEpic(epic);
         }
     }
     public int getNewSubTaskId() {
@@ -240,7 +249,11 @@ public class Manager {
     }
 
     public void removeAllSubTasks() {
-        subTaskMap.clear();
+        Object[] subTaskIdList = subTaskMap.keySet().toArray();
+
+        for (Object subTaskId : subTaskIdList){
+            deleteSubTask((Integer)subTaskId);
+        }
     }
 
     public void printAllSubTasks(){
@@ -253,6 +266,7 @@ public class Manager {
         for (String validStatus : validStatuses) {
             if (status.equals(validStatus)) {
                 checkResult = true;
+                break;
             }
         }
         return checkResult;

@@ -29,7 +29,6 @@ public class Main {
         manager.createSubTask(sub3);
         manager.printAllSubTasks();
         manager.printAllEpics();
-        sub1.setStatus("IN_PROGRESS");
         manager.updateSubTask(sub1);
         sub2.setStatus("DONE");
         sub3.setStatus("DONE");
@@ -37,9 +36,17 @@ public class Main {
         manager.updateSubTask(sub3);
         manager.printAllSubTasks();
         manager.printAllEpics();
-        manager.deleteEpic(epic1.getTaskID());
+        manager.deleteSubTask(sub3.getTaskID());
         manager.printAllEpics();
+        manager.deleteEpic(epic2.getTaskID());
+        manager.printAllEpics();
+        manager.printAllSubTasks();
         manager.removeAllTasks();
         manager.printAllTasks();
+        manager.removeAllSubTasks();
+        manager.printAllEpics();
+        manager.printAllSubTasks();
+        manager.removeAllEpics();
+        manager.printAllEpics();
     }
 }
