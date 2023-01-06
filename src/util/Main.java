@@ -1,3 +1,9 @@
+package util;
+
+import elements.Epic;
+import elements.SubTask;
+import elements.Task;
+
 public class Main {
 
     public static void main(String[] args) { // Тест функционала

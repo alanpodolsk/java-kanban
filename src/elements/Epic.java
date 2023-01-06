@@ -1,8 +1,10 @@
+package elements;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class Epic extends Task{
+public class Epic extends Task {
     private ArrayList<Integer> subTasksId;
     public Epic(String name, String description) {
         this.taskID = 0;
@@ -29,6 +31,6 @@ public class Epic extends Task{
     }
     @Override
     public String toString() {
-        return "Epic(ID=" + this.taskID + ", name=" + this.name + ", description.length=" + description.length() + ", status=" + this.status+", subTasksId="+ Arrays.toString(subTasksId.toArray());
+        return "elements.Epic(ID=" + this.taskID + ", name=" + this.name + ", description.length=" + description.length() + ", status=" + this.status+", subTasksId="+ Arrays.toString(subTasksId.toArray());
     }
 }

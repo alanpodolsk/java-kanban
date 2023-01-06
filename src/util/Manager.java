@@ -1,3 +1,9 @@
+package util;
+
+import elements.Epic;
+import elements.SubTask;
+import elements.Task;
+
 import java.util.HashMap;
 import java.util.List;
 
@@ -9,7 +15,7 @@ public class Manager {
     String[] validStatuses = {"NEW", "IN_PROGRESS", "DONE"}; //в комментариях рекомендовано вынести в Enum, но поскольку сам Enum - это тема следующего спринта, я исправлю этот момент в ТЗ 4
 
 
-    //Работа с Task
+    //Работа с elements.Task
     public int getNewTaskId() {
         int maxId = 0;
         for (Integer key : taskMap.keySet()) {
@@ -66,7 +72,7 @@ public class Manager {
     public void printAllTasks(){
         System.out.println(taskMap.toString());
     }
-    //Работа с Epic
+    //Работа с elements.Epic
 
     public void createEpic(Epic epic){
         if (epic == null) {
@@ -105,10 +111,10 @@ public class Manager {
     }
 
     public void removeAllEpics() {
-        Object[] epicIdList = epicMap.keySet().toArray();
+        Integer[] epicIdList = epicMap.keySet().toArray(new Integer[0]);
 
-        for (Object epicId : epicIdList){
-            deleteEpic((Integer)epicId);
+        for (Integer epicId : epicIdList){
+            deleteEpic(epicId);
         }
     }
 
@@ -189,7 +195,7 @@ public class Manager {
     }
     public void addSubTaskToEpic(SubTask subTask){
         int epicId = subTask.getEpicId();
-        int subTaskId = subTask.taskID;
+        int subTaskId = subTask.getTaskID();
         Epic epic = epicMap.get(epicId);
         if(!epic.isSubTaskExists(subTaskId)){
             epic.addNewSubTask(subTaskId);
@@ -230,7 +236,7 @@ public class Manager {
 
     public void removeSubTaskFromEpic(SubTask subTask){
         int epicId = subTask.getEpicId();
-        int subTaskId = subTask.taskID;
+        int subTaskId = subTask.getTaskID();
         Epic epic = epicMap.get(epicId);
         if(epic.isSubTaskExists(subTaskId)){
             epic.removeSubTask(subTaskId);
@@ -249,10 +255,10 @@ public class Manager {
     }
 
     public void removeAllSubTasks() {
-        Object[] subTaskIdList = subTaskMap.keySet().toArray();
+        Integer[] subTaskIdList = subTaskMap.keySet().toArray(new Integer[0]);
 
-        for (Object subTaskId : subTaskIdList){
-            deleteSubTask((Integer)subTaskId);
+        for (Integer subTaskId : subTaskIdList){
+            deleteSubTask(subTaskId);
         }
     }
 

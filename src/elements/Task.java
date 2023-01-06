@@ -1,3 +1,5 @@
+package elements;
+
 public class Task {
 
     protected int taskID;
@@ -51,7 +53,7 @@ public class Task {
 
     @Override
     public String toString(){
-        return "Task(ID="+this.taskID+", name="+this.name+", description.length="+description.length()+", status="+this.status;
+        return "elements.Task(ID="+this.taskID+", name="+this.name+", description.length="+description.length()+", status="+this.status;
     }
 }
 
