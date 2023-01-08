@@ -14,7 +14,7 @@ public class InMemoryHistoryManager implements HistoryManager{
     @Override
     public List<Task> getHistory(){
         return history;
-    }  // метод возвращает последние 10 просмотренных записей
+    }   // метод возвращает последние 10 просмотренных записей
 
     @Override
     public void add (Task task){
