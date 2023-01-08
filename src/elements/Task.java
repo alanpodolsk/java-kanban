@@ -1,13 +1,15 @@
 package elements;
 
+import util.Statuses;
+
 public class Task {
 
     protected int taskID;
     protected String name;
     protected String description;
-    protected String status;
+    protected Statuses status;
 
-    public Task(String name, String description, String status) {
+    public Task(String name, String description, Statuses status) {
         this.taskID = 0;
         this.name = name;
         this.description = description;
@@ -25,10 +27,10 @@ public class Task {
         this.taskID = taskID;
     }
 
-    public String getStatus(){
+    public Statuses getStatus(){
         return this.status;
     }
-    public void setStatus(String status){
+    public void setStatus(Statuses status){
         this.status = status;
     }
     public String getName(){

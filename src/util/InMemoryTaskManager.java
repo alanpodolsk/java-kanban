@@ -7,15 +7,17 @@ import elements.Task;
 import java.util.HashMap;
 import java.util.List;
 
-public class Manager {
+public class InMemoryTaskManager implements TaskManager{
+
 
     HashMap<Integer, Task> taskMap = new HashMap<>();
     HashMap<Integer, Epic> epicMap = new HashMap<>();
     HashMap<Integer, SubTask> subTaskMap = new HashMap<>();
-    String[] validStatuses = {"NEW", "IN_PROGRESS", "DONE"}; //в комментариях рекомендовано вынести в Enum, но поскольку сам Enum - это тема следующего спринта, я исправлю этот момент в ТЗ 4
+    HistoryManager historyManager = Managers.getDefaultHistory();
 
 
     //Работа с elements.Task
+    @Override
     public int getNewTaskId() {
         int maxId = 0;
         for (Integer key : taskMap.keySet()) {
@@ -26,6 +28,7 @@ public class Manager {
         return maxId + 1;
     }
 
+    @Override
     public void createTask(Task task) {
         if (task == null) {
             System.out.println("Передан пустой объект. Запись в базу невозможна");
@@ -33,13 +36,10 @@ public class Manager {
         }
         int taskId = getNewTaskId();
         task.setTaskID(taskId);
-        if (statusValidation(task.getStatus())) {
-            taskMap.put(taskId, task);
-        } else {
-            System.out.println("Невозможно записать в систему задачу " + task + " - статус не прошел валидацию");
-        }
+        taskMap.put(taskId, task);
     }
 
+    @Override
     public void updateTask(Task task) {
         if (task == null) {
             System.out.println("Передан пустой объект. Запись в базу невозможна");
@@ -50,14 +50,10 @@ public class Manager {
             System.out.println("Невозможно обновить запись " + task + " - данный ID отсутствует в базе");
             return;
         }
-
-        if (statusValidation(task.getStatus())) {
-            taskMap.put(taskId, task);
-        } else {
-            System.out.println("Невозможно записать в систему задачу " + task + " - статус не прошел валидацию");
-        }
+        taskMap.put(taskId, task);
     }
 
+    @Override
     public void deleteTask(int taskId) {
         if (!taskMap.containsKey(taskId)) {
             System.out.println("Невозможно удалить запись №" + taskId + " - данный ID отсутствует в базе");
@@ -66,14 +62,19 @@ public class Manager {
         taskMap.remove(taskId);
     }
 
+    @Override
     public void removeAllTasks() {
         taskMap.clear();
     }
+    @Override
     public void printAllTasks(){
         System.out.println(taskMap.toString());
     }
+
+
     //Работа с elements.Epic
 
+    @Override
     public void createEpic(Epic epic){
         if (epic == null) {
             System.out.println("Передан пустой объект. Запись в базу невозможна");
@@ -84,6 +85,7 @@ public class Manager {
         epicMap.put(epicId, epic);
     }
 
+    @Override
     public void updateEpic(Epic epic){
         if (epic == null) {
             System.out.println("Передан пустой объект. Запись в базу невозможна");
@@ -97,6 +99,7 @@ public class Manager {
             epicMap.put(epicId, epic);
     }
 
+    @Override
     public void deleteEpic(int epicId){
         if (!epicMap.containsKey(epicId)) {
             System.out.println("Невозможно удалить запись №" + epicId + " - данный ID отсутствует в базе");
@@ -110,6 +113,7 @@ public class Manager {
         epicMap.remove(epicId);
     }
 
+    @Override
     public void removeAllEpics() {
         Integer[] epicIdList = epicMap.keySet().toArray(new Integer[0]);
 
@@ -118,6 +122,7 @@ public class Manager {
         }
     }
 
+    @Override
     public void printAllEpics() {
         System.out.println(epicMap.toString());
     }
@@ -131,30 +136,32 @@ public class Manager {
         return maxId + 1;
     }
 
+    @Override
     public void updateEpicStatus(Epic epic){
         List<Integer> subTasksList = epic.getSubTasksList();
         if (subTasksList.size() == 0){
-            epic.setStatus("NEW");
+            epic.setStatus(Statuses.NEW);
             return;
         }
         int newSubs = 0;
         int progressSubs = 0;
         int doneSubs = 0;
-        String status;
+        Statuses status;
 
         for (Integer key : subTaskMap.keySet()){
             if(!subTasksList.contains(key)){
                 continue;
             }
             SubTask actualSubTask = subTaskMap.get(key);
-            switch (actualSubTask.getStatus()){
-                case "NEW":
+            Statuses subTaskStatus = actualSubTask.getStatus();
+            switch (subTaskStatus){
+                case NEW:
                     newSubs++;
                     break;
-                case "IN_PROGRESS":
+                case IN_PROGRESS:
                     progressSubs++;
                     break;
-                case "DONE":
+                case DONE:
                     doneSubs++;
                     break;
                 default:
@@ -162,17 +169,18 @@ public class Manager {
         }
 
         if (newSubs == subTasksList.size()){
-            status = "NEW";
+            status = Statuses.NEW;
         } else if (doneSubs == subTasksList.size()){
-            status = "DONE";
+            status = Statuses.DONE;
         } else {
-            status = "IN_PROGRESS";
+            status = Statuses.IN_PROGRESS;
         }
         epic.setStatus(status);
     }
 
     //Работа с SubTasks
 
+    @Override
     public void createSubTask(SubTask subTask) {
         if (subTask == null) {
             System.out.println("Передан пустой объект. Запись в базу невозможна");
@@ -181,18 +189,19 @@ public class Manager {
         int subTaskId = getNewSubTaskId();
         int epicId = subTask.getEpicId();
         subTask.setTaskID(subTaskId);
-        if (statusValidation(subTask.getStatus()) && epicMap.containsKey(epicId)) {
+        if (epicMap.containsKey(epicId)) {
             subTaskMap.put(subTaskId, subTask);
             addSubTaskToEpic(subTask);
             Epic epic = epicMap.get(epicId);
             updateEpicStatus(epic);
             updateEpic(epic);
         } else {
-            System.out.println("Невозможно записать в систему задачу " + subTask + " - статус не прошел валидацию либо указан некорректный ID эпика");
+            System.out.println("Невозможно записать в систему задачу " + subTask + " - указан некорректный ID эпика");
         }
 
 
     }
+    @Override
     public void addSubTaskToEpic(SubTask subTask){
         int epicId = subTask.getEpicId();
         int subTaskId = subTask.getTaskID();
@@ -202,6 +211,7 @@ public class Manager {
         }
     }
 
+    @Override
     public void updateSubTask(SubTask subTask) {
         if (subTask == null) {
             System.out.println("Передан пустой объект. Запись в базу невозможна");
@@ -213,17 +223,15 @@ public class Manager {
             return;
         }
 
-        if (statusValidation(subTask.getStatus())) {
-            subTaskMap.put(taskId, subTask);
-            int epicId = subTask.getEpicId();
-            Epic epic = epicMap.get(epicId);
-            updateEpicStatus(epic);
-            updateEpic(epic);
-        } else {
-            System.out.println("Невозможно записать в систему задачу " + subTask + " - статус не прошел валидацию");
-        }
+        subTaskMap.put(taskId, subTask);
+        int epicId = subTask.getEpicId();
+        Epic epic = epicMap.get(epicId);
+        updateEpicStatus(epic);
+        updateEpic(epic);
+
     }
 
+    @Override
     public void deleteSubTask(int subTaskId) {
         if (!subTaskMap.containsKey(subTaskId)) {
             System.out.println("Невозможно удалить запись №" + subTaskId + " - данный ID отсутствует в базе");
@@ -234,6 +242,7 @@ public class Manager {
         subTaskMap.remove(subTaskId);
     }
 
+    @Override
     public void removeSubTaskFromEpic(SubTask subTask){
         int epicId = subTask.getEpicId();
         int subTaskId = subTask.getTaskID();
@@ -244,6 +253,7 @@ public class Manager {
             updateEpic(epic);
         }
     }
+    @Override
     public int getNewSubTaskId() {
         int maxId = 0;
         for (Integer key : subTaskMap.keySet()) {
@@ -254,6 +264,7 @@ public class Manager {
         return maxId + 1;
     }
 
+    @Override
     public void removeAllSubTasks() {
         Integer[] subTaskIdList = subTaskMap.keySet().toArray(new Integer[0]);
 
@@ -262,20 +273,42 @@ public class Manager {
         }
     }
 
+    @Override
     public void printAllSubTasks(){
         System.out.println(subTaskMap.toString());
     }
 
-// General
-    public boolean statusValidation(String status) {
-        boolean checkResult = false;
-        for (String validStatus : validStatuses) {
-            if (status.equals(validStatus)) {
-                checkResult = true;
-                break;
-            }
+    @Override
+    public Task getTask(int id){
+        Task task = taskMap.get(id);
+        if (task != null){
+            historyManager.add(task);
         }
-        return checkResult;
+        return task;
     }
+    @Override
+    public SubTask getSubTask(int id) {
+        SubTask subTask = subTaskMap.get(id);
+        if (subTask != null){
+            historyManager.add((Task)subTask);
+        }
+        return subTask;
+    }
+    @Override
+    public Epic getEpic(int id) {
+        Epic epic = epicMap.get(id);
+        if (epic != null){
+            historyManager.add((Task)epic);
+        }
+        return epic;
+    }
+
+    @Override
+    public List <Task> getHistory(){
+        return historyManager.getHistory();
+    }
+
+
+
 }
 

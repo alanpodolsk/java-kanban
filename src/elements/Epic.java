@@ -1,5 +1,7 @@
 package elements;
 
+import util.Statuses;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -10,7 +12,7 @@ public class Epic extends Task {
         this.taskID = 0;
         this.name = name;
         this.description = description;
-        this.status = "NEW";
+        this.status = Statuses.NEW;
         this.subTasksId = new ArrayList<>();
     }
 

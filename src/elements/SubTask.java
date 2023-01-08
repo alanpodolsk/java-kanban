@@ -1,10 +1,12 @@
 package elements;
 
+import util.Statuses;
+
 public class SubTask extends Task {
 
     private int epicId;
 
-    public SubTask(String name, String description, String status, int epicId) {
+    public SubTask(String name, String description, Statuses status, int epicId) {
         this.name = name;
         this.description = description;
         this.status = status;
