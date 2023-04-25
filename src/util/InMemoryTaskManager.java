@@ -13,20 +13,17 @@ public class InMemoryTaskManager implements TaskManager{
     HashMap<Integer, Task> taskMap = new HashMap<>();
     HashMap<Integer, Epic> epicMap = new HashMap<>();
     HashMap<Integer, SubTask> subTaskMap = new HashMap<>();
+    static int idManager = 0;
     HistoryManager historyManager = Managers.getDefaultHistory();
 
 
-    //Работа с elements.Task
     @Override
-    public int getNewTaskId() {
-        int maxId = 0;
-        for (Integer key : taskMap.keySet()) {
-            if (key > maxId) {
-                maxId = key;
-            }
-        }
-        return maxId + 1;
+    public int getNewId() {
+        idManager +=1;
+        return idManager;
     }
+
+    //Работа с elements.Task
 
     @Override
     public void createTask(Task task) {
@@ -34,7 +31,7 @@ public class InMemoryTaskManager implements TaskManager{
             System.out.println("Передан пустой объект. Запись в базу невозможна");
             return;
         }
-        int taskId = getNewTaskId();
+        int taskId = getNewId();
         task.setTaskID(taskId);
         taskMap.put(taskId, task);
     }
@@ -60,6 +57,7 @@ public class InMemoryTaskManager implements TaskManager{
             return;
         }
         taskMap.remove(taskId);
+        historyManager.remove(taskId);
     }
 
     @Override
@@ -80,7 +78,7 @@ public class InMemoryTaskManager implements TaskManager{
             System.out.println("Передан пустой объект. Запись в базу невозможна");
             return;
         }
-        int epicId = getNewEpicId();
+        int epicId = getNewId();
         epic.setTaskID(epicId);
         epicMap.put(epicId, epic);
     }
@@ -111,6 +109,7 @@ public class InMemoryTaskManager implements TaskManager{
             deleteSubTask(key);
             }
         epicMap.remove(epicId);
+        historyManager.remove(epicId);
     }
 
     @Override
@@ -125,15 +124,6 @@ public class InMemoryTaskManager implements TaskManager{
     @Override
     public void printAllEpics() {
         System.out.println(epicMap.toString());
-    }
-    public int getNewEpicId() {
-        int maxId = 0;
-        for (Integer key : epicMap.keySet()) {
-            if (key > maxId) {
-                maxId = key;
-            }
-        }
-        return maxId + 1;
     }
 
     @Override
@@ -186,7 +176,7 @@ public class InMemoryTaskManager implements TaskManager{
             System.out.println("Передан пустой объект. Запись в базу невозможна");
             return;
         }
-        int subTaskId = getNewSubTaskId();
+        int subTaskId = getNewId();
         int epicId = subTask.getEpicId();
         subTask.setTaskID(subTaskId);
         if (epicMap.containsKey(epicId)) {
@@ -240,6 +230,8 @@ public class InMemoryTaskManager implements TaskManager{
         SubTask subTask = subTaskMap.get(subTaskId);
         removeSubTaskFromEpic(subTask);
         subTaskMap.remove(subTaskId);
+        historyManager.remove(subTaskId);
+
     }
 
     @Override
@@ -253,16 +245,7 @@ public class InMemoryTaskManager implements TaskManager{
             updateEpic(epic);
         }
     }
-    @Override
-    public int getNewSubTaskId() {
-        int maxId = 0;
-        for (Integer key : subTaskMap.keySet()) {
-            if (key > maxId) {
-                maxId = key;
-            }
-        }
-        return maxId + 1;
-    }
+
 
     @Override
     public void removeAllSubTasks() {

@@ -7,10 +7,10 @@ import elements.Task;
 import java.util.List;
 
 public interface TaskManager {
-
+    int getNewId();
 
     //Работа с elements.Task
-    int getNewTaskId();
+
 
     void createTask(Task task);
 
@@ -43,8 +43,6 @@ public interface TaskManager {
     void deleteSubTask(int subTaskId);
 
     void removeSubTaskFromEpic(SubTask subTask);
-
-    int getNewSubTaskId();
 
     void removeAllSubTasks();
 
