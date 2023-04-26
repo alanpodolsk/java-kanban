@@ -17,7 +17,7 @@ public class InMemoryHistoryManager<T> implements HistoryManager{
 
     @Override
     public List<Task> getHistory(){
-        return viewHistory;
+        return getTasks();
     }   // метод возвращает последние 10 просмотренных записей
 
     @Override
@@ -64,15 +64,18 @@ public class InMemoryHistoryManager<T> implements HistoryManager{
     public void removeNode(Node thisNode){
         Node next = thisNode.next;
         Node prev = thisNode.prev;
-        prev.next = thisNode.next;
-        next.prev = thisNode.prev;
+
+        if (prev != null){prev.next = thisNode.next;}
+        if (next != null){next.prev = thisNode.prev;}
+
     }
 
     public List<Task> getTasks(){
         List<Task> tasksList = new ArrayList<>();
         Node <Task> curNode = tail;
         for (int i = 0; i< MAX_SIZE; i++){
-                tasksList.add(curNode.data);
+            if (curNode == null){break;}
+            tasksList.add(curNode.data);
                 curNode = curNode.prev;
             }
         return tasksList;

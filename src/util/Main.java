@@ -14,9 +14,9 @@ public class Main {
         Task task2 = new Task("Купить слона","Купить слона и не сойти с ума",Statuses.NEW);
         Epic epic1 = new Epic("Переехать в Ботсвану","Купить билеты и собрать чемодан");
         Epic epic2 = new Epic("Убраться в комнате","Пропылесосить комнату");
-        SubTask sub1 = new SubTask("Купить билеты на самолет","Купить билеты на рейс в Ботсвану", Statuses.NEW,1);
-        SubTask sub2 = new SubTask("Сесть в самолет","Сесть в самолет и улететь в Ботсвану",Statuses.NEW, 1);
-        SubTask sub3 = new SubTask("Пропылесосить комнату","Включить пылесос и пропылесосить комнату",Statuses.NEW,2);
+        SubTask sub1 = new SubTask("Купить билеты на самолет","Купить билеты на рейс в Ботсвану", Statuses.NEW,3);
+        SubTask sub2 = new SubTask("Сесть в самолет","Сесть в самолет и улететь в Ботсвану",Statuses.NEW, 3);
+        SubTask sub3 = new SubTask("Пропылесосить комнату","Включить пылесос и пропылесосить комнату",Statuses.NEW,4);
 
         //Добавляем объекты в БД
 
@@ -44,21 +44,21 @@ public class Main {
         taskManager.updateSubTask(sub3);
         taskManager.printAllSubTasks();
         taskManager.printAllEpics();
-        taskManager.getSubTask(1);
-        taskManager.getSubTask(3);
-        taskManager.getSubTask(2);
+        taskManager.getSubTask(5);
+        taskManager.getSubTask(6);
+        taskManager.getSubTask(7);
         System.out.println("История:");
         System.out.println(taskManager.getHistory());
-        taskManager.getEpic(2);
-        taskManager.getEpic(1);
-        System.out.println("История:");
+        taskManager.getEpic(4);
+        taskManager.getEpic(3);
+        System.out.println("История 1:");
         System.out.println(taskManager.getHistory());
-        taskManager.getEpic(2);
-        taskManager.getEpic(2);
-        taskManager.getEpic(2);
-        taskManager.getEpic(2);
-        taskManager.getEpic(2);
-        System.out.println("История:");
+        taskManager.getEpic(3);
+        taskManager.getEpic(3);
+        taskManager.getEpic(3);
+        taskManager.getEpic(3);
+        taskManager.getEpic(3);
+        System.out.println("История 2:");
         System.out.println(taskManager.getHistory());
         taskManager.deleteSubTask(sub3.getTaskID());
         taskManager.printAllEpics();
