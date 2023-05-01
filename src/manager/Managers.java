@@ -1,13 +1,13 @@
-package util;
+package manager;
 
 public class Managers {
 
-    static TaskManager getDefault(){
+    public static TaskManager getDefault(){
         TaskManager taskManager = new InMemoryTaskManager();
         return taskManager;
     }
 
-    static HistoryManager getDefaultHistory(){
+    public static HistoryManager getDefaultHistory(){
         HistoryManager historyManager = new InMemoryHistoryManager();
         return historyManager;
     }

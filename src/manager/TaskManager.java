@@ -1,16 +1,15 @@
-package util;
+package manager;
 
-import elements.Epic;
-import elements.SubTask;
-import elements.Task;
+import model.Epic;
+import model.SubTask;
+import model.Task;
 
 import java.util.List;
+import java.util.Map;
 
 public interface TaskManager {
     int getNewId();
-
     //Работа с elements.Task
-
 
     void createTask(Task task);
 
@@ -20,7 +19,7 @@ public interface TaskManager {
 
     void removeAllTasks();
 
-    void printAllTasks();
+    List<Task> getTasks();
 
     void createEpic(Epic epic);
 
@@ -30,23 +29,17 @@ public interface TaskManager {
 
     void removeAllEpics();
 
-    void printAllEpics();
-
-    void updateEpicStatus(Epic epic);
+    List<Epic> getEpics();
 
     void createSubTask(SubTask subTask);
-
-    void addSubTaskToEpic(SubTask subTask);
 
     void updateSubTask(SubTask subTask);
 
     void deleteSubTask(int subTaskId);
 
-    void removeSubTaskFromEpic(SubTask subTask);
-
     void removeAllSubTasks();
 
-    void printAllSubTasks();
+    List<SubTask> getSubTasks();
 
     Task getTask(int id);
 

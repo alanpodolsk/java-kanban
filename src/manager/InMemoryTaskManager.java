@@ -1,18 +1,21 @@
-package util;
+package manager;
 
-import elements.Epic;
-import elements.SubTask;
-import elements.Task;
+import model.Epic;
+import model.Status;
+import model.SubTask;
+import model.Task;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class InMemoryTaskManager implements TaskManager{
 
 
-    HashMap<Integer, Task> taskMap = new HashMap<>();
-    HashMap<Integer, Epic> epicMap = new HashMap<>();
-    HashMap<Integer, SubTask> subTaskMap = new HashMap<>();
+    Map<Integer, Task> tasks = new HashMap<>();
+    Map<Integer, Epic> epics = new HashMap<>();
+    Map<Integer, SubTask> subTasks = new HashMap<>();
     static int idManager = 0;
     HistoryManager historyManager = Managers.getDefaultHistory();
 
@@ -31,9 +34,7 @@ public class InMemoryTaskManager implements TaskManager{
             System.out.println("Передан пустой объект. Запись в базу невозможна");
             return;
         }
-        int taskId = getNewId();
-        task.setTaskID(taskId);
-        taskMap.put(taskId, task);
+        tasks.put(task.getId(), task);
     }
 
     @Override
@@ -42,33 +43,34 @@ public class InMemoryTaskManager implements TaskManager{
             System.out.println("Передан пустой объект. Запись в базу невозможна");
             return;
         }
-        int taskId = task.getTaskID();
-        if (!taskMap.containsKey(taskId)) {
+        int taskId = task.getId();
+        if (!tasks.containsKey(taskId)) {
             System.out.println("Невозможно обновить запись " + task + " - данный ID отсутствует в базе");
             return;
         }
-        taskMap.put(taskId, task);
+        tasks.put(taskId, task);
     }
 
     @Override
     public void deleteTask(int taskId) {
-        if (!taskMap.containsKey(taskId)) {
+        if (!tasks.containsKey(taskId)) {
             System.out.println("Невозможно удалить запись №" + taskId + " - данный ID отсутствует в базе");
             return;
         }
-        taskMap.remove(taskId);
+        tasks.remove(taskId);
         historyManager.remove(taskId);
     }
 
     @Override
     public void removeAllTasks() {
-        taskMap.clear();
-    }
-    @Override
-    public void printAllTasks(){
-        System.out.println(taskMap.toString());
+        tasks.clear();
     }
 
+    @Override
+    public List<Task> getTasks() {
+        List <Task> list = new ArrayList<>(tasks.values());
+        return list;
+    }
 
     //Работа с elements.Epic
 
@@ -78,9 +80,7 @@ public class InMemoryTaskManager implements TaskManager{
             System.out.println("Передан пустой объект. Запись в базу невозможна");
             return;
         }
-        int epicId = getNewId();
-        epic.setTaskID(epicId);
-        epicMap.put(epicId, epic);
+        epics.put(epic.getId(), epic);
     }
 
     @Override
@@ -89,61 +89,59 @@ public class InMemoryTaskManager implements TaskManager{
             System.out.println("Передан пустой объект. Запись в базу невозможна");
             return;
         }
-        int epicId = epic.getTaskID();
-        if (!epicMap.containsKey(epicId)) {
+        int epicId = epic.getId();
+        if (!epics.containsKey(epicId)) {
             System.out.println("Невозможно обновить запись " + epic + " - данный ID отсутствует в базе");
             return;
         }
-            epicMap.put(epicId, epic);
+            epics.put(epicId, epic);
     }
 
     @Override
     public void deleteEpic(int epicId){
-        if (!epicMap.containsKey(epicId)) {
+        if (!epics.containsKey(epicId)) {
             System.out.println("Невозможно удалить запись №" + epicId + " - данный ID отсутствует в базе");
             return;
         }
-        Epic epic = epicMap.get(epicId);
+        Epic epic = epics.get(epicId);
         List<Integer> subTaskList = epic.getSubTasksList();
         for (Integer key : subTaskList) {
             deleteSubTask(key);
             }
-        epicMap.remove(epicId);
+        epics.remove(epicId);
         historyManager.remove(epicId);
     }
 
     @Override
     public void removeAllEpics() {
-        Integer[] epicIdList = epicMap.keySet().toArray(new Integer[0]);
-
-        for (Integer epicId : epicIdList){
-            deleteEpic(epicId);
+        for (Integer epic: epics.keySet()){
+            deleteEpic(epic);
         }
     }
 
     @Override
-    public void printAllEpics() {
-        System.out.println(epicMap.toString());
-    }
+    public List<Epic> getEpics() {
+        List <Epic> list = new ArrayList<>(epics.values());
+        return list;
+        }
 
-    @Override
-    public void updateEpicStatus(Epic epic){
+    private void updateEpicStatus(Epic epic){
         List<Integer> subTasksList = epic.getSubTasksList();
         if (subTasksList.size() == 0){
-            epic.setStatus(Statuses.NEW);
+            epic.setStatus(Status.NEW);
             return;
         }
         int newSubs = 0;
         int progressSubs = 0;
         int doneSubs = 0;
-        Statuses status;
+        Status status;
 
-        for (Integer key : subTaskMap.keySet()){
+        for (Integer key : subTasks.keySet()){
             if(!subTasksList.contains(key)){
                 continue;
             }
-            SubTask actualSubTask = subTaskMap.get(key);
-            Statuses subTaskStatus = actualSubTask.getStatus();
+            SubTask actualSubTask = subTasks.get(key);
+            Status subTaskStatus = actualSubTask.getStatus();
             switch (subTaskStatus){
                 case NEW:
                     newSubs++;
@@ -159,11 +157,11 @@ public class InMemoryTaskManager implements TaskManager{
         }
 
         if (newSubs == subTasksList.size()){
-            status = Statuses.NEW;
+            status = Status.NEW;
         } else if (doneSubs == subTasksList.size()){
-            status = Statuses.DONE;
+            status = Status.DONE;
         } else {
-            status = Statuses.IN_PROGRESS;
+            status = Status.IN_PROGRESS;
         }
         epic.setStatus(status);
     }
@@ -176,13 +174,11 @@ public class InMemoryTaskManager implements TaskManager{
             System.out.println("Передан пустой объект. Запись в базу невозможна");
             return;
         }
-        int subTaskId = getNewId();
         int epicId = subTask.getEpicId();
-        subTask.setTaskID(subTaskId);
-        if (epicMap.containsKey(epicId)) {
-            subTaskMap.put(subTaskId, subTask);
+        if (epics.containsKey(epicId)) {
+            subTasks.put(subTask.getId(), subTask);
             addSubTaskToEpic(subTask);
-            Epic epic = epicMap.get(epicId);
+            Epic epic = epics.get(epicId);
             updateEpicStatus(epic);
             updateEpic(epic);
         } else {
@@ -191,11 +187,11 @@ public class InMemoryTaskManager implements TaskManager{
 
 
     }
-    @Override
-    public void addSubTaskToEpic(SubTask subTask){
+
+    private void addSubTaskToEpic(SubTask subTask){
         int epicId = subTask.getEpicId();
-        int subTaskId = subTask.getTaskID();
-        Epic epic = epicMap.get(epicId);
+        int subTaskId = subTask.getId();
+        Epic epic = epics.get(epicId);
         if(!epic.isSubTaskExists(subTaskId)){
             epic.addNewSubTask(subTaskId);
         }
@@ -207,15 +203,15 @@ public class InMemoryTaskManager implements TaskManager{
             System.out.println("Передан пустой объект. Запись в базу невозможна");
             return;
         }
-        int taskId = subTask.getTaskID();
-        if (!subTaskMap.containsKey(taskId)) {
+        int taskId = subTask.getId();
+        if (!subTasks.containsKey(taskId)) {
             System.out.println("Невозможно обновить запись " + subTask + " - данный ID отсутствует в базе");
             return;
         }
 
-        subTaskMap.put(taskId, subTask);
+        subTasks.put(taskId, subTask);
         int epicId = subTask.getEpicId();
-        Epic epic = epicMap.get(epicId);
+        Epic epic = epics.get(epicId);
         updateEpicStatus(epic);
         updateEpic(epic);
 
@@ -223,22 +219,22 @@ public class InMemoryTaskManager implements TaskManager{
 
     @Override
     public void deleteSubTask(int subTaskId) {
-        if (!subTaskMap.containsKey(subTaskId)) {
+        if (!subTasks.containsKey(subTaskId)) {
             System.out.println("Невозможно удалить запись №" + subTaskId + " - данный ID отсутствует в базе");
             return;
         }
-        SubTask subTask = subTaskMap.get(subTaskId);
+        SubTask subTask = subTasks.get(subTaskId);
         removeSubTaskFromEpic(subTask);
-        subTaskMap.remove(subTaskId);
+        subTasks.remove(subTaskId);
         historyManager.remove(subTaskId);
 
     }
 
-    @Override
-    public void removeSubTaskFromEpic(SubTask subTask){
+
+    private void removeSubTaskFromEpic(SubTask subTask){
         int epicId = subTask.getEpicId();
-        int subTaskId = subTask.getTaskID();
-        Epic epic = epicMap.get(epicId);
+        int subTaskId = subTask.getId();
+        Epic epic = epics.get(epicId);
         if(epic.isSubTaskExists(subTaskId)){
             epic.removeSubTask(subTaskId);
             updateEpicStatus(epic);
@@ -248,22 +244,25 @@ public class InMemoryTaskManager implements TaskManager{
 
 
     @Override
-    public void removeAllSubTasks() {
-        Integer[] subTaskIdList = subTaskMap.keySet().toArray(new Integer[0]);
 
+    public void removeAllSubTasks() {
+   Integer[] subTaskIdList = subTasks.keySet().toArray(new Integer[0]);
         for (Integer subTaskId : subTaskIdList){
             deleteSubTask(subTaskId);
+
         }
+
     }
 
     @Override
-    public void printAllSubTasks(){
-        System.out.println(subTaskMap.toString());
+    public List<SubTask> getSubTasks() {
+        List<SubTask> list = new ArrayList<>(subTasks.values());
+        return list;
     }
 
     @Override
     public Task getTask(int id){
-        Task task = taskMap.get(id);
+        Task task = tasks.get(id);
         if (task != null){
             historyManager.add(task);
         }
@@ -271,7 +270,7 @@ public class InMemoryTaskManager implements TaskManager{
     }
     @Override
     public SubTask getSubTask(int id) {
-        SubTask subTask = subTaskMap.get(id);
+        SubTask subTask = subTasks.get(id);
         if (subTask != null){
             historyManager.add((Task)subTask);
         }
@@ -279,7 +278,7 @@ public class InMemoryTaskManager implements TaskManager{
     }
     @Override
     public Epic getEpic(int id) {
-        Epic epic = epicMap.get(id);
+        Epic epic = epics.get(id);
         if (epic != null){
             historyManager.add((Task)epic);
         }

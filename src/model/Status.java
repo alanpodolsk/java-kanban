@@ -1,6 +1,6 @@
-package util;
+package model;
 
-public enum Statuses {
+public enum Status {
     NEW,
     IN_PROGRESS,
     DONE

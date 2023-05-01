@@ -1,6 +1,6 @@
-package util;
+package manager;
 
-import elements.Task;
+import model.Task;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,11 +9,11 @@ import java.util.List;
 
 public class InMemoryHistoryManager<T> implements HistoryManager{
 
-    HashMap <Integer, Node> nodeMap = new HashMap<>();
+    HashMap <Integer, Node> nodes = new HashMap<>();
     List<Task> history = new LinkedList<>();
     List<Task> viewHistory = new ArrayList<>();
 
-    public static final byte MAX_SIZE = 10;
+    private static final byte MAX_SIZE = 10;
 
     @Override
     public List<Task> getHistory(){
@@ -27,9 +27,11 @@ public class InMemoryHistoryManager<T> implements HistoryManager{
 
     @Override
     public void remove (int id) {
-        Node curNode = nodeMap.get(id);
-        removeNode(curNode);
-        nodeMap.remove(id);
+        Node curNode = nodes.get(id);
+        if (curNode != null) {
+            removeNode(curNode);
+        }
+        nodes.remove(id);
         }
 
     class Node<Task> {
@@ -55,10 +57,10 @@ public class InMemoryHistoryManager<T> implements HistoryManager{
         else
             oldTail.next = newNode;
         size++;
-        if (nodeMap.containsKey(task.getTaskID())) {
-            removeNode(nodeMap.get(task.getTaskID()));
+        if (nodes.containsKey(task.getId())) {
+            removeNode(nodes.get(task.getId()));
         }
-            nodeMap.put(task.getTaskID(), newNode);
+            nodes.put(task.getId(), newNode);
     }
 
     public void removeNode(Node thisNode){
@@ -71,14 +73,14 @@ public class InMemoryHistoryManager<T> implements HistoryManager{
     }
 
     public List<Task> getTasks(){
-        List<Task> tasksList = new ArrayList<>();
+        List<Task> tasks = new ArrayList<>();
         Node <Task> curNode = tail;
         for (int i = 0; i< MAX_SIZE; i++){
             if (curNode == null){break;}
-            tasksList.add(curNode.data);
+            tasks.add(curNode.data);
                 curNode = curNode.prev;
             }
-        return tasksList;
+        return tasks;
         }
 
     }
