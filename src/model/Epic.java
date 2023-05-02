@@ -15,20 +15,6 @@ public class Epic extends Task {
         this.subTasksIds = new ArrayList<>();
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-        Epic epic = (Epic) o;
-        return Objects.equals(subTasksIds, epic.subTasksIds);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), subTasksIds);
-    }
-
     public void addNewSubTask(Integer subTaskId){
         this.subTasksIds.add(subTaskId);
     }
@@ -47,5 +33,18 @@ public class Epic extends Task {
     @Override
     public String toString() {
         return "elements.Epic(ID=" + this.id + ", name=" + this.name + ", description.length=" + description.length() + ", status=" + this.status+", subTasksId="+ Arrays.toString(subTasksIds.toArray());
+    }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        Epic epic = (Epic) o;
+        return Objects.equals(subTasksIds, epic.subTasksIds);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), subTasksIds);
     }
 }

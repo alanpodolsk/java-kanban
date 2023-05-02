@@ -63,13 +63,15 @@ public class InMemoryTaskManager implements TaskManager{
 
     @Override
     public void removeAllTasks() {
-        tasks.clear();
+        Integer[] taskIdList = tasks.keySet().toArray(new Integer[0]);
+        for (Integer taskId : taskIdList){
+            deleteSubTask(taskId);
+        }
     }
 
     @Override
     public List<Task> getTasks() {
-        List <Task> list = new ArrayList<>(tasks.values());
-        return list;
+        return new ArrayList<>(tasks.values());
     }
 
     //Работа с elements.Epic
@@ -121,8 +123,7 @@ public class InMemoryTaskManager implements TaskManager{
 
     @Override
     public List<Epic> getEpics() {
-        List <Epic> list = new ArrayList<>(epics.values());
-        return list;
+        return  new ArrayList<>(epics.values());
         }
 
     private void updateEpicStatus(Epic epic){
@@ -244,20 +245,16 @@ public class InMemoryTaskManager implements TaskManager{
 
 
     @Override
-
     public void removeAllSubTasks() {
    Integer[] subTaskIdList = subTasks.keySet().toArray(new Integer[0]);
         for (Integer subTaskId : subTaskIdList){
             deleteSubTask(subTaskId);
-
         }
-
     }
 
     @Override
     public List<SubTask> getSubTasks() {
-        List<SubTask> list = new ArrayList<>(subTasks.values());
-        return list;
+        return  new ArrayList<>(subTasks.values());
     }
 
     @Override

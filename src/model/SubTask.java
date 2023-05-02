@@ -14,6 +14,18 @@ public class SubTask extends Task {
         this.epicId = epicId;
     }
 
+    public int getEpicId(){
+        return epicId;
+    }
+
+    public void setEpicId (int epicId){
+        this.epicId = epicId;
+    }
+
+    @Override
+    public String toString() {
+        return "subTask(ID=" + this.id + ", name=" + this.name + ", description.length=" + description.length() + ", status=" + this.status + ", epicId="+this.epicId;
+    }
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -26,19 +38,6 @@ public class SubTask extends Task {
     @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), epicId);
-    }
-
-    public int getEpicId(){
-        return epicId;
-    }
-
-    public void setEpicId (int epicId){
-        this.epicId = epicId;
-    }
-
-    @Override
-    public String toString() {
-        return "subTask(ID=" + this.id + ", name=" + this.name + ", description.length=" + description.length() + ", status=" + this.status + ", epicId="+this.epicId;
     }
 }
 

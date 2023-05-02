@@ -19,19 +19,6 @@ public class Task {
     public Task() {
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Task task = (Task) o;
-        return id == task.id && name.equals(task.name) && description.equals(task.description) && status == task.status;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name, description, status);
-    }
-
     public int getId(){
         return this.id;
     }
@@ -69,6 +56,18 @@ public class Task {
     @Override
     public String toString(){
         return "elements.Task(ID="+this.id +", name="+this.name+", description.length="+description.length()+", status="+this.status;
+    }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Task task = (Task) o;
+        return id == task.id && name.equals(task.name) && description.equals(task.description) && status == task.status;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, description, status);
     }
 }
 
