@@ -5,7 +5,6 @@ import model.SubTask;
 import model.Task;
 
 import java.util.List;
-import java.util.Map;
 
 public interface TaskManager {
     int getNewId();
@@ -15,7 +14,7 @@ public interface TaskManager {
 
     void updateTask(Task task);
 
-    void deleteTask(int taskId);
+    void deleteTask(int Id);
 
     void removeAllTasks();
 

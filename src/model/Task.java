@@ -2,18 +2,22 @@ package model;
 
 import java.util.Objects;
 
+import static model.TaskType.TASK;
+
 public class Task {
 
     protected int id;
     protected String name;
     protected String description;
     protected Status status;
+    protected TaskType type;
 
     public Task(int id, String name, String description, Status status) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.status = status;
+        this.type = TASK;
     }
 
     public Task() {
@@ -51,6 +55,10 @@ public class Task {
         if (description != null){
             this.description = description;
         }
+    }
+
+    public String toFileString(){
+        return this.id +","+ this.type+","+this.name+","+this.description;
     }
 
     @Override

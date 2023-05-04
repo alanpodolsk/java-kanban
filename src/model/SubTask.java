@@ -27,6 +27,10 @@ public class SubTask extends Task {
         return "subTask(ID=" + this.id + ", name=" + this.name + ", description.length=" + description.length() + ", status=" + this.status + ", epicId="+this.epicId;
     }
     @Override
+    public String toFileString(){
+        return super.toFileString()+","+this.epicId;
+    }
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;

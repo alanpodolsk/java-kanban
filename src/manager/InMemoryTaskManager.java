@@ -52,13 +52,13 @@ public class InMemoryTaskManager implements TaskManager{
     }
 
     @Override
-    public void deleteTask(int taskId) {
-        if (!tasks.containsKey(taskId)) {
-            System.out.println("Невозможно удалить запись №" + taskId + " - данный ID отсутствует в базе");
+    public void deleteTask(int Id) {
+        if (!tasks.containsKey(Id)) {
+            System.out.println("Невозможно удалить запись №" + Id + " - данный ID отсутствует в базе");
             return;
         }
-        tasks.remove(taskId);
-        historyManager.remove(taskId);
+        tasks.remove(Id);
+        historyManager.remove(Id);
     }
 
     @Override
@@ -100,18 +100,18 @@ public class InMemoryTaskManager implements TaskManager{
     }
 
     @Override
-    public void deleteEpic(int epicId){
-        if (!epics.containsKey(epicId)) {
-            System.out.println("Невозможно удалить запись №" + epicId + " - данный ID отсутствует в базе");
+    public void deleteEpic(int id){
+        if (!epics.containsKey(id)) {
+            System.out.println("Невозможно удалить запись №" + id + " - данный ID отсутствует в базе");
             return;
         }
-        Epic epic = epics.get(epicId);
+        Epic epic = epics.get(id);
         List<Integer> subTaskList = epic.getSubTasksList();
         for (Integer key : subTaskList) {
             deleteSubTask(key);
             }
-        epics.remove(epicId);
-        historyManager.remove(epicId);
+        epics.remove(id);
+        historyManager.remove(id);
     }
 
     @Override
@@ -219,15 +219,15 @@ public class InMemoryTaskManager implements TaskManager{
     }
 
     @Override
-    public void deleteSubTask(int subTaskId) {
-        if (!subTasks.containsKey(subTaskId)) {
-            System.out.println("Невозможно удалить запись №" + subTaskId + " - данный ID отсутствует в базе");
+    public void deleteSubTask(int id) {
+        if (!subTasks.containsKey(id)) {
+            System.out.println("Невозможно удалить запись №" + id + " - данный ID отсутствует в базе");
             return;
         }
-        SubTask subTask = subTasks.get(subTaskId);
+        SubTask subTask = subTasks.get(id);
         removeSubTaskFromEpic(subTask);
-        subTasks.remove(subTaskId);
-        historyManager.remove(subTaskId);
+        subTasks.remove(id);
+        historyManager.remove(id);
 
     }
 

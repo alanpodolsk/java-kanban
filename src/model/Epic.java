@@ -5,6 +5,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
+import static model.TaskType.EPIC;
+
 public class Epic extends Task {
     private List<Integer> subTasksIds;
     public Epic(int id, String name, String description) {
@@ -13,6 +15,7 @@ public class Epic extends Task {
         this.description = description;
         this.status = Status.NEW;
         this.subTasksIds = new ArrayList<>();
+        this.type = EPIC;
     }
 
     public void addNewSubTask(Integer subTaskId){
@@ -47,4 +50,6 @@ public class Epic extends Task {
     public int hashCode() {
         return Objects.hash(super.hashCode(), subTasksIds);
     }
+
 }
+
