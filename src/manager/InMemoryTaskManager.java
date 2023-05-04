@@ -13,11 +13,11 @@ import java.util.Map;
 public class InMemoryTaskManager implements TaskManager{
 
 
-    Map<Integer, Task> tasks = new HashMap<>();
-    Map<Integer, Epic> epics = new HashMap<>();
-    Map<Integer, SubTask> subTasks = new HashMap<>();
+    private final Map<Integer, Task> tasks = new HashMap<>();
+    private final Map<Integer, Epic> epics = new HashMap<>();
+    private final Map<Integer, SubTask> subTasks = new HashMap<>();
     static int idManager = 0;
-    HistoryManager historyManager = Managers.getDefaultHistory();
+    private final HistoryManager historyManager = Managers.getDefaultHistory();
 
 
     @Override
@@ -65,7 +65,7 @@ public class InMemoryTaskManager implements TaskManager{
     public void removeAllTasks() {
         Integer[] taskIdList = tasks.keySet().toArray(new Integer[0]);
         for (Integer taskId : taskIdList){
-            deleteSubTask(taskId);
+            deleteTask(taskId);
         }
     }
 
