@@ -56,9 +56,12 @@ public class Task {
             this.description = description;
         }
     }
+    public TaskType getType(){
+        return this.type;
+    }
 
     public String toFileString(){
-        return this.id +","+ this.type+","+this.name+","+this.description;
+        return this.id +","+ this.type+","+this.name+","+this.description+","+this.status;
     }
 
     @Override

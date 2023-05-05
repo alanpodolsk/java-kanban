@@ -1,3 +1,4 @@
+import manager.FileBackedTaskManager;
 import manager.Managers;
 import model.Status;
 import manager.TaskManager;
@@ -8,11 +9,16 @@ import model.Task;
 public class Main {
 
     public static void main(String[] args) { // Тест функционала
-
-        TaskManager taskManager = Managers.getDefault();
-
+     //TaskManager taskManager = Managers.getDefault();
+     FileBackedTaskManager taskManager = FileBackedTaskManager.loadFromFile("fileManager.csv");
+         System.out.println(taskManager.getEpics());
+         System.out.println(taskManager.getTasks());
+         System.out.println(taskManager.getSubTasks());
+         System.out.println(taskManager.getHistory());
         Task task1 = new Task(taskManager.getNewId(), "Помыть ежа","Помыть ежа и не уколоться", Status.NEW);
-        Task task2 = new Task(taskManager.getNewId(), "Купить слона","Купить слона и не сойти с ума", Status.NEW);
+        taskManager.createTask(task1);
+        taskManager.getTask(8);
+ /*        Task task2 = new Task(taskManager.getNewId(), "Купить слона","Купить слона и не сойти с ума", Status.NEW);
         Epic epic1 = new Epic(taskManager.getNewId(), "Переехать в Ботсвану","Купить билеты и собрать чемодан");
         Epic epic2 = new Epic(taskManager.getNewId(), "Убраться в комнате","Пропылесосить комнату");
         SubTask sub1 = new SubTask(taskManager.getNewId(), "Купить билеты на самолет","Купить билеты на рейс в Ботсвану", Status.NEW,3);
@@ -21,14 +27,14 @@ public class Main {
 
         //Добавляем объекты в БД
 
-        taskManager.createTask(task1);
+
         taskManager.createTask(task2);
         System.out.println(taskManager.getTasks());
         task1.setDescription("Помыть ежа с мылом и щеткой");
         taskManager.getTask(1);
         taskManager.getTask(2);
-        System.out.println("История:");
-        System.out.println(taskManager.getHistory());
+//      System.out.println("История:");
+//      System.out.println(taskManager.getHistory());
         taskManager.updateTask(task1);
         System.out.println(taskManager.getTasks());
         taskManager.createEpic(epic1);
@@ -36,7 +42,7 @@ public class Main {
         taskManager.createSubTask(sub1);
         taskManager.createSubTask(sub2);
         taskManager.createSubTask(sub3);
-        System.out.println(taskManager.getSubTasks());
+       System.out.println(taskManager.getSubTasks());
         System.out.println(taskManager.getEpics());
         taskManager.updateSubTask(sub1);
         sub2.setStatus(Status.DONE);
@@ -72,6 +78,6 @@ public class Main {
         System.out.println(taskManager.getEpics());
         System.out.println(taskManager.getSubTasks());
         taskManager.removeAllEpics();
-        System.out.println(taskManager.getEpics());
+        System.out.println(taskManager.getEpics()); */
     }
 }

@@ -2,6 +2,8 @@ package model;
 
 import java.util.Objects;
 
+import static model.TaskType.SUBTASK;
+
 public class SubTask extends Task {
 
     private int epicId;
@@ -12,6 +14,7 @@ public class SubTask extends Task {
         this.description = description;
         this.status = status;
         this.epicId = epicId;
+        this.type = SUBTASK;
     }
 
     public int getEpicId(){

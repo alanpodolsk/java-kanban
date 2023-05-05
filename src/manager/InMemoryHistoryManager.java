@@ -82,5 +82,9 @@ public class InMemoryHistoryManager<T> implements HistoryManager{
             }
         return tasks;
         }
+    @Override
+    public String getTasksId(){
+        return nodes.keySet().toString();
+    }
 
     }
