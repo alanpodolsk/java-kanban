@@ -3,37 +3,37 @@ package manager;
 import model.*;
 import java.nio.file.*;
 import java.io.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
 
 
 public class FileBackedTaskManager extends InMemoryTaskManager{
-
+private final DateTimeFormatter DATE_TIME_FORMAT = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
     private void save() throws ManagerSaveException {
-        try {
-            Writer fileWriter = new FileWriter ("fileManager.csv");
-            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-            bufferedWriter.write("id,type,name,description,epic");
-            bufferedWriter.newLine();
-            for(Epic epic: epics.values()){
-                bufferedWriter.write(epic.toFileString());
-                bufferedWriter.newLine();
+
+        BufferedWriter bufferedWriter;
+        try (FileWriter fileWriter = new FileWriter("fileManager.csv")) {
+            fileWriter.write("id,type,name,description,status,duration,startTime,endTime,epic");
+            fileWriter.write("\n");
+            for (Epic epic : epics.values()) {
+                fileWriter.write(epic.toFileString(DATE_TIME_FORMAT));
+                fileWriter.write("\n");
             }
 
-            for(Task task: tasks.values()){
-                bufferedWriter.write(task.toFileString());
-                bufferedWriter.newLine();
+            for (Task task : tasks.values()) {
+                fileWriter.write(task.toFileString(DATE_TIME_FORMAT));
+                fileWriter.write("\n");
             }
 
-            for(SubTask subTask: subTasks.values()){
-                bufferedWriter.write(subTask.toFileString());
-                bufferedWriter.newLine();
+            for (SubTask subTask : subTasks.values()) {
+                fileWriter.write(subTask.toFileString(DATE_TIME_FORMAT));
+                fileWriter.write("\n");
             }
-            bufferedWriter.newLine();
-            bufferedWriter.write(historyToString(historyManager));
-            bufferedWriter.close();
-            fileWriter.close();
-        } catch (IOException exception){
+            fileWriter.write("\n");
+            fileWriter.write(historyToString(historyManager));
+        } catch (IOException exception) {
             throw new ManagerSaveException();
         }
 
@@ -99,13 +99,13 @@ public class FileBackedTaskManager extends InMemoryTaskManager{
         Task task = null;
         switch (TaskType.valueOf(data[1])) {
             case TASK:
-                task = new Task(Integer.parseInt(data[0]), data[2], data[3], Status.valueOf(data[4]));
+                task = new Task(Integer.parseInt(data[0]), data[2], data[3], Status.valueOf(data[4]),Long.parseLong(data[5]), LocalDateTime.parse(data[6],DATE_TIME_FORMAT));
                 break;
             case EPIC:
                 task = new Epic(Integer.parseInt(data[0]), data[2], data[3]);
                 break;
             case SUBTASK:
-                task = new SubTask(Integer.parseInt(data[0]), data[2], data[3], Status.valueOf(data[4]), Integer.parseInt(data[5]));
+                task = new SubTask(Integer.parseInt(data[0]), data[2], data[3], Status.valueOf(data[4]),Long.parseLong(data[5]), LocalDateTime.parse(data[6],DATE_TIME_FORMAT), Integer.parseInt(data[5]));
                 break;
             default:
                 break;

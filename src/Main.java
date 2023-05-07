@@ -6,35 +6,38 @@ import model.Epic;
 import model.SubTask;
 import model.Task;
 
+import java.time.LocalDateTime;
+
 public class Main {
 
     public static void main(String[] args) { // Тест функционала
      //TaskManager taskManager = Managers.getDefault();
-     FileBackedTaskManager taskManager = FileBackedTaskManager.loadFromFile("fileManager.csv");
+   FileBackedTaskManager taskManager = FileBackedTaskManager.loadFromFile("fileManager.csv");
          System.out.println(taskManager.getEpics());
          System.out.println(taskManager.getTasks());
          System.out.println(taskManager.getSubTasks());
          System.out.println(taskManager.getHistory());
-        Task task1 = new Task(taskManager.getNewId(), "Помыть ежа","Помыть ежа и не уколоться", Status.NEW);
-        taskManager.createTask(task1);
+
+
         taskManager.getTask(8);
- /*        Task task2 = new Task(taskManager.getNewId(), "Купить слона","Купить слона и не сойти с ума", Status.NEW);
+ /*       Task task1 = new Task(taskManager.getNewId(), "Помыть ежа","Помыть ежа и не уколоться", Status.NEW,90, LocalDateTime.of(2023, 3, 4, 12, 0, 0, 0));
+        Task task2 = new Task(taskManager.getNewId(), "Купить слона","Купить слона и не сойти с ума", Status.NEW, 60, LocalDateTime.of(2023, 3, 2, 13, 45, 0, 0));
         Epic epic1 = new Epic(taskManager.getNewId(), "Переехать в Ботсвану","Купить билеты и собрать чемодан");
         Epic epic2 = new Epic(taskManager.getNewId(), "Убраться в комнате","Пропылесосить комнату");
-        SubTask sub1 = new SubTask(taskManager.getNewId(), "Купить билеты на самолет","Купить билеты на рейс в Ботсвану", Status.NEW,3);
-        SubTask sub2 = new SubTask(taskManager.getNewId(), "Сесть в самолет","Сесть в самолет и улететь в Ботсвану", Status.NEW, 3);
-        SubTask sub3 = new SubTask(taskManager.getNewId(), "Пропылесосить комнату","Включить пылесос и пропылесосить комнату", Status.NEW,4);
+        SubTask sub1 = new SubTask(taskManager.getNewId(), "Купить билеты на самолет","Купить билеты на рейс в Ботсвану", Status.NEW,115,LocalDateTime.of(2023, 3, 1, 22, 0, 0, 0),3 );
+        SubTask sub2 = new SubTask(taskManager.getNewId(), "Сесть в самолет","Сесть в самолет и улететь в Ботсвану", Status.NEW, 165,LocalDateTime.of(2023, 4, 5, 14, 0, 0, 0),3);
+        SubTask sub3 = new SubTask(taskManager.getNewId(), "Пропылесосить комнату","Включить пылесос и пропылесосить комнату", Status.NEW,25,LocalDateTime.of(2023, 2, 5, 10, 48, 0, 0),4);
 
         //Добавляем объекты в БД
 
-
+        taskManager.createTask(task1);
         taskManager.createTask(task2);
         System.out.println(taskManager.getTasks());
         task1.setDescription("Помыть ежа с мылом и щеткой");
         taskManager.getTask(1);
         taskManager.getTask(2);
-//      System.out.println("История:");
-//      System.out.println(taskManager.getHistory());
+        System.out.println("История:");
+        System.out.println(taskManager.getHistory());
         taskManager.updateTask(task1);
         System.out.println(taskManager.getTasks());
         taskManager.createEpic(epic1);
@@ -42,7 +45,9 @@ public class Main {
         taskManager.createSubTask(sub1);
         taskManager.createSubTask(sub2);
         taskManager.createSubTask(sub3);
-       System.out.println(taskManager.getSubTasks());
+       System.out.println("Приоритеты");
+        System.out.println(taskManager.getPrioritizedTasks());
+        System.out.println(taskManager.getSubTasks());
         System.out.println(taskManager.getEpics());
         taskManager.updateSubTask(sub1);
         sub2.setStatus(Status.DONE);
@@ -66,18 +71,6 @@ public class Main {
         taskManager.getEpic(3);
         taskManager.getEpic(3);
         System.out.println("История 2:");
-        System.out.println(taskManager.getHistory());
-        taskManager.deleteSubTask(sub3.getId());
-        System.out.println(taskManager.getEpics());
-        taskManager.deleteEpic(epic2.getId());
-        System.out.println(taskManager.getEpics());
-        System.out.println(taskManager.getSubTasks());
-        taskManager.removeAllTasks();
-        System.out.println(taskManager.getEpics());
-        taskManager.removeAllSubTasks();
-        System.out.println(taskManager.getEpics());
-        System.out.println(taskManager.getSubTasks());
-        taskManager.removeAllEpics();
-        System.out.println(taskManager.getEpics()); */
+        System.out.println(taskManager.getHistory());*/
     }
 }

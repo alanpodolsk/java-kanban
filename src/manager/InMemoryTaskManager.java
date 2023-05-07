@@ -5,10 +5,11 @@ import model.Status;
 import model.SubTask;
 import model.Task;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.*;
 
 public class InMemoryTaskManager implements TaskManager{
 
@@ -16,6 +17,7 @@ public class InMemoryTaskManager implements TaskManager{
     protected final Map<Integer, Task> tasks = new HashMap<>();
     protected final Map<Integer, Epic> epics = new HashMap<>();
     protected final Map<Integer, SubTask> subTasks = new HashMap<>();
+    protected final TreeSet <Task> prioritizedTasks = new TreeSet <Task>(new TaskTimeComparator());
     static int idManager = 0;
     protected final HistoryManager historyManager = Managers.getDefaultHistory();
 
@@ -35,6 +37,7 @@ public class InMemoryTaskManager implements TaskManager{
             return;
         }
         tasks.put(task.getId(), task);
+        prioritizedTasks.add(task);
     }
 
     @Override
@@ -49,6 +52,7 @@ public class InMemoryTaskManager implements TaskManager{
             return;
         }
         tasks.put(taskId, task);
+        prioritizedTasks.add(task);
     }
 
     @Override
@@ -57,7 +61,9 @@ public class InMemoryTaskManager implements TaskManager{
             System.out.println("Невозможно удалить запись №" + Id + " - данный ID отсутствует в базе");
             return;
         }
+        Task task = tasks.get(Id);
         tasks.remove(Id);
+        prioritizedTasks.remove(task);
         historyManager.remove(Id);
     }
 
@@ -82,6 +88,9 @@ public class InMemoryTaskManager implements TaskManager{
             System.out.println("Передан пустой объект. Запись в базу невозможна");
             return;
         }
+        epic.setStartTime(getEpicStartTime(epic));
+        epic.setEndTime(getEpicEndTime(epic));
+        epic.setDuration();
         epics.put(epic.getId(), epic);
     }
 
@@ -96,7 +105,10 @@ public class InMemoryTaskManager implements TaskManager{
             System.out.println("Невозможно обновить запись " + epic + " - данный ID отсутствует в базе");
             return;
         }
-            epics.put(epicId, epic);
+        epic.setStartTime(getEpicStartTime(epic));
+        epic.setEndTime(getEpicEndTime(epic));
+        epic.setDuration();
+        epics.put(epicId, epic);
     }
 
     @Override
@@ -167,6 +179,40 @@ public class InMemoryTaskManager implements TaskManager{
         epic.setStatus(status);
     }
 
+    public LocalDateTime getEpicStartTime(Epic epic){
+        LocalDateTime startTime = null;
+        for (Integer subTaskId: epic.getSubTasksList()){
+            if (startTime == null){
+               startTime = subTasks.get(subTaskId).getStartTime();
+            } else if (subTasks.get(subTaskId).getStartTime().isBefore(startTime)){
+                startTime = subTasks.get(subTaskId).getStartTime();
+            }
+        }
+        if (startTime == null){
+            return LocalDateTime.ofInstant(Instant.ofEpochMilli(0), ZoneId.of("Europe/Moscow"));
+        } else {
+            return startTime;
+        }
+    }
+
+    public LocalDateTime getEpicEndTime(Epic epic){
+        LocalDateTime endTime = null;
+        for (Integer subTaskId: epic.getSubTasksList()){
+            if (endTime == null){
+                endTime = subTasks.get(subTaskId).getEndTime();
+            } else if (subTasks.get(subTaskId).getEndTime().isAfter(endTime)){
+                endTime = subTasks.get(subTaskId).getEndTime();
+            }
+        }
+        if (endTime == null){
+            return LocalDateTime.ofInstant(Instant.ofEpochMilli(0), ZoneId.of("Europe/Moscow"));
+        } else {
+            return endTime;
+        }
+    }
+
+
+
     //Работа с SubTasks
 
     @Override
@@ -178,6 +224,7 @@ public class InMemoryTaskManager implements TaskManager{
         int epicId = subTask.getEpicId();
         if (epics.containsKey(epicId)) {
             subTasks.put(subTask.getId(), subTask);
+            prioritizedTasks.add(subTask);
             addSubTaskToEpic(subTask);
             Epic epic = epics.get(epicId);
             updateEpicStatus(epic);
@@ -211,6 +258,7 @@ public class InMemoryTaskManager implements TaskManager{
         }
 
         subTasks.put(taskId, subTask);
+        prioritizedTasks.add(subTask);
         int epicId = subTask.getEpicId();
         Epic epic = epics.get(epicId);
         updateEpicStatus(epic);
@@ -226,6 +274,7 @@ public class InMemoryTaskManager implements TaskManager{
         }
         SubTask subTask = subTasks.get(id);
         removeSubTaskFromEpic(subTask);
+        prioritizedTasks.remove(subTask);
         subTasks.remove(id);
         historyManager.remove(id);
 
@@ -287,6 +336,10 @@ public class InMemoryTaskManager implements TaskManager{
         return historyManager.getHistory();
     }
 
+    @Override
+    public TreeSet<Task> getPrioritizedTasks() {
+        return prioritizedTasks;
+    }
 
 
 }
