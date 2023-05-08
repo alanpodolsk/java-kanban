@@ -11,7 +11,7 @@ public class SubTask extends Task {
 
     private int epicId;
 
-    public SubTask(int id, String name, String description, Status status,  long duration, LocalDateTime startTime, int epicId) {
+    public SubTask(int id, String name, String description, Status status, long duration, LocalDateTime startTime, int epicId) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -22,26 +22,36 @@ public class SubTask extends Task {
         this.startTime = startTime;
     }
 
-    public int getEpicId(){
+    public int getEpicId() {
         return epicId;
     }
 
-    public void setEpicId (int epicId){
+    public void setEpicId(int epicId) {
         this.epicId = epicId;
     }
 
     @Override
     public String toString() {
-        return "subTask(ID=" + this.id + ", name=" + this.name + ", description.length=" + description.length() + ", status=" + this.status + ", startTime="+this.startTime+", epicId="+this.epicId;
+        return "subTask(ID=" + this.id + ", name=" + this.name + ", description.length=" + description.length() + ", status=" + this.status + ", startTime=" + this.startTime + ", epicId=" + this.epicId;
     }
+
     @Override
-    public String toFileString(DateTimeFormatter formatter){
-        return super.toFileString(formatter)+","+this.epicId;
+    public String toFileString(DateTimeFormatter formatter) {
+        return super.toFileString(formatter) + "," + this.epicId;
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), epicId);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        SubTask subTask = (SubTask) o;
+        return epicId == subTask.epicId;
     }
 }
 
