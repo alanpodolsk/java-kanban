@@ -137,8 +137,10 @@ public class InMemoryTaskManager implements TaskManager {
             throw new TaskManagerException("Невозможно удалить запись №" + id + " - данный ID отсутствует в базе");
         }
         Epic epic = epics.get(id);
+
         List<Integer> subTaskList = epic.getSubTasksList();
-        for (Integer key : subTaskList) {
+        Integer[] subTaskIdList = subTaskList.toArray(new Integer[0]);
+        for (Integer key : subTaskIdList) {
             deleteSubTask(key);
         }
         epics.remove(id);

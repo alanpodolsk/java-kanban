@@ -63,7 +63,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         }
         String[] history = value.split(",");
         for (String unit : history) {
-            ;
             if (getEpic(Integer.parseInt(unit)) != null) {
                 historyManager.add(getEpic(Integer.parseInt(unit)));
             } else if (getTask(Integer.parseInt(unit)) != null) {

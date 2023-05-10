@@ -10,8 +10,6 @@ import java.util.List;
 public class InMemoryHistoryManager<T> implements HistoryManager {
 
     HashMap<Integer, Node> nodes = new HashMap<>();
-    List<Task> history = new LinkedList<>();
-    List<Task> viewHistory = new ArrayList<>();
 
     private static final byte MAX_SIZE = 10;
 
@@ -22,7 +20,9 @@ public class InMemoryHistoryManager<T> implements HistoryManager {
 
     @Override
     public void add(Task task) {
-        linkLast(task);
+        if (task != null){
+            linkLast(task);
+        }
     }
 
     @Override
