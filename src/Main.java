@@ -21,7 +21,7 @@ public class Main {
 
 /*        taskManager.getTask(8);*/
         Task task1 = new Task(taskManager.getNewId(), "Помыть ежа","Помыть ежа и не уколоться", Status.NEW,60, LocalDateTime.of(2023, 3, 3, 12, 0, 0, 0));
-        Task task2 = new Task(taskManager.getNewId(), "Купить слона","Купить слона и не сойти с ума", Status.NEW, 60, LocalDateTime.of(2023, 3, 3, 11, 31, 0, 0));
+        Task task2 = new Task(taskManager.getNewId(), "Купить слона","Купить слона и не сойти с ума", Status.NEW, 60, LocalDateTime.of(2023, 3, 3, 9, 31, 0, 0));
         Epic epic1 = new Epic(taskManager.getNewId(), "Переехать в Ботсвану","Купить билеты и собрать чемодан");
         Epic epic2 = new Epic(taskManager.getNewId(), "Убраться в комнате","Пропылесосить комнату");
         SubTask sub1 = new SubTask(taskManager.getNewId(), "Купить билеты на самолет","Купить билеты на рейс в Ботсвану", Status.NEW,115,LocalDateTime.of(2023, 3, 1, 22, 0, 0, 0),3 );

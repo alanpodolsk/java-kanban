@@ -9,9 +9,9 @@ import static model.TaskType.SUBTASK;
 
 public class SubTask extends Task {
 
-    private int epicId;
+    private Integer epicId;
 
-    public SubTask(int id, String name, String description, Status status, long duration, LocalDateTime startTime, int epicId) {
+    public SubTask(int id, String name, String description, Status status, long duration, LocalDateTime startTime, Integer epicId) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -22,7 +22,7 @@ public class SubTask extends Task {
         this.startTime = startTime;
     }
 
-    public int getEpicId() {
+    public Integer getEpicId() {
         return epicId;
     }
 

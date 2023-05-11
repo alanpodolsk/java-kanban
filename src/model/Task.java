@@ -10,7 +10,7 @@ import static model.TaskType.TASK;
 
 public class Task {
 
-    protected int id;
+    protected Integer id;
     protected String name;
     protected String description;
     protected Status status;
@@ -18,7 +18,7 @@ public class Task {
     protected Duration duration;
     protected LocalDateTime startTime;
 
-    public Task(int id, String name, String description, Status status, long duration, LocalDateTime startTime) {
+    public Task(Integer id, String name, String description, Status status, long duration, LocalDateTime startTime) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -31,7 +31,7 @@ public class Task {
     public Task() {
     }
 
-    public int getId() {
+    public Integer getId() {
         return this.id;
     }
 
