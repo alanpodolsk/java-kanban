@@ -275,10 +275,10 @@ public class HttpTaskServerTest {
     public void shouldReturnPrioritizedTasks() {
         //Arrange
         URI url = URI.create("http://localhost:8080/tasks/");
-        TreeSet<Task> returnedTask;
+        List<Task> returnedTask;
         List<Task> expectedTasks = new ArrayList<>();
-        Type listType = new TypeToken<TreeSet<Task>>(){}.getType();
-      //  expectedTasks = manager.getPrioritizedTasks();
+        Type listType = new TypeToken<ArrayList<Task>>(){}.getType();
+        expectedTasks = manager.getPrioritizedTasks();
         HttpRequest request = HttpRequest.newBuilder().uri(url).GET().build();
         int code = 0;
         //Act
@@ -291,7 +291,7 @@ public class HttpTaskServerTest {
             return;
         }
         //Assert
-        assertArrayEquals(expectedTasks.toArray(),returnedTask.toArray(),"Возвращенный список подзадач не соответствует аналогичному в менеджере");
+        assertEquals(expectedTasks.toString(),returnedTask.toString(),"Возвращенный список подзадач не соответствует аналогичному в менеджере");
         assertEquals(200, code, "Код ответа не соответствует ожидаемому");
     }
 
@@ -684,7 +684,7 @@ public class HttpTaskServerTest {
     }
 
     @AfterEach
-    public void stopManager() {
+    public void stopServer() {
         server.stopServer();
     }
 }

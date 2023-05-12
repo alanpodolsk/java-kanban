@@ -13,7 +13,7 @@ import java.util.List;
 public class FileBackedTaskManager extends InMemoryTaskManager {
     final DateTimeFormatter DATE_TIME_FORMAT = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
 
-    private void save() throws TaskManagerException {
+    protected void save() throws TaskManagerException {
 
         BufferedWriter bufferedWriter;
         try (FileWriter fileWriter = new FileWriter("fileManager.csv")) {
@@ -47,17 +47,17 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
             }
             fileWriter.write("\n");
-            fileWriter.write(historyToString(historyManager));
+            fileWriter.write(historyToString());
         } catch (IOException exception) {
             throw new TaskManagerException("Произошла ошибка при записи истории в файл");
         }
     }
 
-    private String historyToString(HistoryManager manager) {
-        return manager.getTasksId();
+    protected String historyToString() {
+        return historyManager.getTasksId();
     }
 
-    private void historyFromString(String value) {
+    protected void historyFromString(String value) {
         if (value.isBlank()) {
             return;
         }

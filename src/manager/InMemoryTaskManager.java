@@ -205,6 +205,7 @@ public class InMemoryTaskManager implements TaskManager {
     protected LocalDateTime getEpicStartTime(Epic epic) {
         LocalDateTime startTime = null;
         for (Integer subTaskId : epic.getSubTasksList()) {
+            if (subTasks.get(subTaskId) == null){continue;}
             if (startTime == null) {
                 startTime = subTasks.get(subTaskId).getStartTime();
             } else if (subTasks.get(subTaskId).getStartTime().isBefore(startTime)) {
@@ -221,6 +222,7 @@ public class InMemoryTaskManager implements TaskManager {
     protected LocalDateTime getEpicEndTime(Epic epic) {
         LocalDateTime endTime = null;
         for (Integer subTaskId : epic.getSubTasksList()) {
+            if (subTasks.get(subTaskId) == null){continue;}
             if (endTime == null) {
                 endTime = subTasks.get(subTaskId).getEndTime();
             } else if (subTasks.get(subTaskId).getEndTime().isAfter(endTime)) {
@@ -364,8 +366,13 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public TreeSet<Task> getPrioritizedTasks() {
-        return prioritizedTasks;
+    public List <Task> getPrioritizedTasks() {
+        List <Task> prioritizedTasks1 = new ArrayList<>();
+        for (Task task: prioritizedTasks){
+            prioritizedTasks1.add(task);
+
+        }
+        return prioritizedTasks1;
     }
 
     public HistoryManager getHistoryManagerFromTaskManager() {
