@@ -9,7 +9,6 @@ import static model.TaskType.SUBTASK;
 
 public class SubTask extends Task {
 
-    private Integer epicId;
 
     public SubTask(int id, String name, String description, Status status, long duration, LocalDateTime startTime, Integer epicId) {
         this.id = id;
@@ -30,10 +29,10 @@ public class SubTask extends Task {
         this.epicId = epicId;
     }
 
-    @Override
+ /*  @Override
     public String toString() {
         return "subTask(ID=" + this.id + ", name=" + this.name + ", description.length=" + description.length() + ", status=" + this.status + ", startTime=" + this.startTime + ", epicId=" + this.epicId;
-    }
+    } */
 
     @Override
     public String toFileString(DateTimeFormatter formatter) {

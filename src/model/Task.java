@@ -4,6 +4,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
 import static model.TaskType.TASK;
@@ -17,6 +18,9 @@ public class Task {
     protected TaskType type;
     protected Duration duration;
     protected LocalDateTime startTime;
+    protected LocalDateTime endTime;
+    protected Integer epicId;
+    protected List<Integer> subTasksIds;
 
     public Task(Integer id, String name, String description, Status status, long duration, LocalDateTime startTime) {
         this.id = id;
@@ -99,7 +103,8 @@ public class Task {
 
     @Override
     public String toString() {
-        return "elements.Task(ID=" + this.id + ", name=" + this.name + ", description.length=" + description.length() + ", status=" + this.status + ", startTime=" + this.startTime;
+        return "elements(Type= "+this.type+"ID=" + this.id + ", name=" + this.name + ", description.length=" + description.length() + ", status=" + this.status + ", startTime=" + this.startTime+
+                "endTime="+this.endTime+"epicId="+this.epicId+"SubTaskIds="+this.subTasksIds;
     }
 
     @Override

@@ -10,8 +10,6 @@ import java.util.Objects;
 import static model.TaskType.EPIC;
 
 public class Epic extends Task {
-    private List<Integer> subTasksIds;
-    private LocalDateTime endTime;
 
     public Epic(Integer id, String name, String description) {
         this.id = id;
@@ -54,10 +52,10 @@ public class Epic extends Task {
         }
     }
 
-    @Override
+/*    @Override
     public String toString() {
         return "elements.Epic(ID=" + this.id + ", name=" + this.name + ", description.length=" + description.length() + ", status=" + this.status + ", subTasksId=" + Arrays.toString(subTasksIds.toArray());
-    }
+    }*/
 
     @Override
     public int hashCode() {

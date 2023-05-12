@@ -32,7 +32,9 @@ class TasksHandler implements HttpHandler {
     private static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
     @Override
     public void handle(HttpExchange exchange) throws IOException {
-        Endpoint endpoint = getEndpoint(exchange.getRequestURI().getPath(), exchange.getRequestMethod());
+        String query = exchange.getRequestURI().getQuery();
+        if (query == null){query = "";}
+        Endpoint endpoint = getEndpoint(exchange.getRequestURI().getPath(), exchange.getRequestMethod(),query);
         switch(endpoint){
             case GET_ALL_TASKS:
                 handleGetAllTasks(exchange);
@@ -87,42 +89,42 @@ class TasksHandler implements HttpHandler {
         }
 
     }
-    private Endpoint getEndpoint(String requestPath, String requestMethod) {
-        if (requestMethod.equals("GET") && requestPath.equals("/tasks/task")) {
+    private Endpoint getEndpoint(String requestPath, String requestMethod, String requestQuery) {
+        if (requestMethod.equals("GET") && requestPath.equals("/tasks/task/") && requestQuery.isEmpty()) {
             return Endpoint.GET_ALL_TASKS;
-        } else if (requestMethod.equals("GET") && requestPath.equals("/tasks/epic")) {
+        } else if (requestMethod.equals("GET") && requestPath.equals("/tasks/epic/") && requestQuery.isEmpty()) {
             return Endpoint.GET_ALL_EPICS;
-        } else if (requestMethod.equals("GET") && requestPath.equals("/tasks/subtask")) {
+        } else if (requestMethod.equals("GET") && requestPath.equals("/tasks/subtask/") && requestQuery.isEmpty()) {
             return Endpoint.GET_ALL_SUBTASKS;
-        } else if (requestMethod.equals("GET") && requestPath.startsWith("/tasks/task?")) {
+        } else if (requestMethod.equals("GET") && requestPath.equals("/tasks/task/") && requestQuery.startsWith("id="))  {
             return Endpoint.GET_TASK_BY_ID;
-        } else if (requestMethod.equals("GET") && requestPath.startsWith("/tasks/subtask?")) {
+        } else if (requestMethod.equals("GET") && requestPath.equals("/tasks/subtask/") && requestQuery.startsWith("id=")) {
             return Endpoint.GET_SUBTASK_BY_ID;
-        } else if (requestMethod.equals("GET") && requestPath.startsWith("/tasks/epic?")) {
+        } else if (requestMethod.equals("GET") && requestPath.equals("/tasks/epic/") && requestQuery.startsWith("id=")) {
             return Endpoint.GET_EPIC_BY_ID;
-        } else if (requestMethod.equals("GET") && requestPath.startsWith("/tasks/subtask/epic?")) {
+        } else if (requestMethod.equals("GET") && requestPath.equals("/tasks/subtask/epic/") && requestQuery.startsWith("id=")) {
             return Endpoint.GET_EPIC_SUBTASKS;
-        } else if (requestMethod.equals("GET") && requestPath.startsWith("/tasks/")) {
+        } else if (requestMethod.equals("GET") && requestPath.equals("/tasks/") && requestQuery.isEmpty()) {
             return Endpoint.GET_PRIORITIZED_TASKS;
-        } else if (requestMethod.equals("GET") && requestPath.startsWith("/tasks/history")) {
+        } else if (requestMethod.equals("GET") && requestPath.equals("/tasks/history/") && requestQuery.isEmpty()) {
             return Endpoint.GET_HISTORY;
-        } else if (requestMethod.equals("POST") && requestPath.startsWith("/tasks/task")) {
+        } else if (requestMethod.equals("POST") && requestPath.equals("/tasks/task/") && requestQuery.isEmpty()) {
             return Endpoint.POST_TASK;
-        } else if (requestMethod.equals("POST") && requestPath.startsWith("/tasks/subtask")) {
+        } else if (requestMethod.equals("POST") && requestPath.equals("/tasks/subtask/") && requestQuery.isEmpty()) {
             return Endpoint.POST_SUBTASK;
-        } else if (requestMethod.equals("POST") && requestPath.startsWith("/tasks/epic")) {
+        } else if (requestMethod.equals("POST") && requestPath.equals("/tasks/epic/") && requestQuery.isEmpty()) {
             return Endpoint.POST_EPIC;
-        } else if (requestMethod.equals("DELETE") && requestPath.equals("/tasks/subtask")) {
+        } else if (requestMethod.equals("DELETE") && requestPath.equals("/tasks/subtask/") && requestQuery.isEmpty()) {
             return Endpoint.DELETE_ALL_SUBTASKS;
-        } else if (requestMethod.equals("DELETE") && requestPath.equals("/tasks/epic")) {
+        } else if (requestMethod.equals("DELETE") && requestPath.equals("/tasks/epic/") && requestQuery.isEmpty()) {
             return Endpoint.DELETE_ALL_EPICS;
-        } else if (requestMethod.equals("DELETE") && requestPath.equals("/tasks/task")) {
+        } else if (requestMethod.equals("DELETE") && requestPath.equals("/tasks/task/") && requestQuery.isEmpty()) {
             return Endpoint.DELETE_ALL_TASKS;
-        } else if (requestMethod.equals("DELETE") && requestPath.startsWith("/tasks/task?")) {
+        } else if (requestMethod.equals("DELETE") && requestPath.equals("/tasks/task/") && requestQuery.startsWith("id=")) {
             return Endpoint.DELETE_TASK_BY_ID;
-        } else if (requestMethod.equals("DELETE") && requestPath.startsWith("/tasks/subtask?")) {
+        } else if (requestMethod.equals("DELETE") && requestPath.equals("/tasks/subtask/") && requestQuery.startsWith("id=")) {
             return Endpoint.DELETE_SUBTASK_BY_ID;
-        }   else if (requestMethod.equals("DELETE") && requestPath.startsWith("/tasks/epic?")) {
+        }   else if (requestMethod.equals("DELETE") && requestPath.equals("/tasks/epic/") && requestQuery.startsWith("id=")) {
                 return Endpoint.DELETE_EPIC_BY_ID;
         } else {
             return Endpoint.UNKNOWN;
@@ -156,7 +158,7 @@ class TasksHandler implements HttpHandler {
         writeResponse(exchange,response,200);
     }
     private void handleGetPrioritizedTasks(HttpExchange exchange) throws IOException {
-        response = gson.toJson(manager.getPrioritizedTasks());
+        response = gson.toJson(manager.getPrioritizedTasks().toArray());
         writeResponse(exchange,response,200);
     }
     private void handleGetHistory(HttpExchange exchange) throws IOException {
@@ -164,7 +166,7 @@ class TasksHandler implements HttpHandler {
         writeResponse(exchange,response,200);
     }
     private void handleGetTaskById(HttpExchange exchange) throws IOException {
-        Integer id = getIdFromRequest(exchange.getRequestURI().getPath());
+        Integer id = getIdFromRequest(exchange.getRequestURI().getQuery());
         if (id != null){
             Task task = manager.getTask(id);
             if (task != null){
@@ -180,7 +182,7 @@ class TasksHandler implements HttpHandler {
         }
     }
     private void handleGetEpicById(HttpExchange exchange) throws IOException {
-        Integer id = getIdFromRequest(exchange.getRequestURI().getPath());
+        Integer id = getIdFromRequest(exchange.getRequestURI().getQuery());
         if (id != null){
             Epic epic = manager.getEpic(id);
             if (epic != null){
@@ -196,7 +198,7 @@ class TasksHandler implements HttpHandler {
         }
     }
     private void handleGetSubTaskById(HttpExchange exchange) throws IOException {
-        Integer id = getIdFromRequest(exchange.getRequestURI().getPath());
+        Integer id = getIdFromRequest(exchange.getRequestURI().getQuery());
         if (id != null){
             SubTask subTask = manager.getSubTask(id);
             if (subTask != null){
@@ -212,7 +214,7 @@ class TasksHandler implements HttpHandler {
         }
     }
     private void handleGetEpicSubTasksById(HttpExchange exchange) throws IOException {
-        Integer id = getIdFromRequest(exchange.getRequestURI().getPath());
+        Integer id = getIdFromRequest(exchange.getRequestURI().getQuery());
         if (id != null){
             Epic epic = manager.getEpic(id);
             if (epic != null){
@@ -232,7 +234,7 @@ class TasksHandler implements HttpHandler {
         }
     }
     private void handleDeleteTaskById(HttpExchange exchange) throws IOException {
-        Integer id = getIdFromRequest(exchange.getRequestURI().getPath());
+        Integer id = getIdFromRequest(exchange.getRequestURI().getQuery());
         if (id != null){
             manager.deleteTask(id);
             response = "Задача с id = "+id+" удалена либо не найдена в менеджере";
@@ -243,7 +245,7 @@ class TasksHandler implements HttpHandler {
         }
     }
     private void handleDeleteEpicById(HttpExchange exchange) throws IOException {
-        Integer id = getIdFromRequest(exchange.getRequestURI().getPath());
+        Integer id = getIdFromRequest(exchange.getRequestURI().getQuery());
         if (id != null){
             manager.deleteEpic(id);
             response = "Задача с id = "+id+" удалена либо не найдена в менеджере";
@@ -254,7 +256,7 @@ class TasksHandler implements HttpHandler {
         }
     }
     private void handleDeleteSubTaskById (HttpExchange exchange) throws IOException {
-        Integer id = getIdFromRequest(exchange.getRequestURI().getPath());
+        Integer id = getIdFromRequest(exchange.getRequestURI().getQuery());
         if (id != null){
             manager.deleteSubTask(id);
             response = "Задача с id = "+id+" удалена либо не найдена в менеджере";
@@ -274,7 +276,6 @@ class TasksHandler implements HttpHandler {
                 writeResponse(exchange, "Поля задачи не могут быть пустыми", 400);
                 return;
             }
-            task.setId(manager.getNewId());
             try {
                 manager.createTask(task);
                 writeResponse(exchange, "Задача добавлена", 201);
@@ -344,9 +345,8 @@ class TasksHandler implements HttpHandler {
         exchange.close();
     }
     private Integer getIdFromRequest(String requestPath){
-        String[] splitter = requestPath.split("id=");
         try{
-            return Integer.parseInt(splitter[1]);
+            return Integer.parseInt(requestPath.replace("id=",""));
         } catch (Exception e){
            return null;
         }
