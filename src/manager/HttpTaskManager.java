@@ -18,20 +18,18 @@ public class HttpTaskManager extends FileBackedTaskManager{
     final String KEY_EPIC = "epics";
     final String KEY_SUBTASK = "subtasks";
     final String KEY_HISTORY = "history";
-    final String token;
     Gson gson;
 
     public HttpTaskManager(){
-        this.client = new KVServerClient();
-        token = client.getToken();
+        this.client = new KVServerClient("http://localhost:8078");
         gson = new Gson();
     }
     @Override
     protected void save(){
-        client.put(KEY_TASK, gson.toJson(getTasks()),token);
-        client.put(KEY_EPIC, gson.toJson(getEpics()),token);
-        client.put(KEY_SUBTASK, gson.toJson(getSubTasks()),token);
-        client.put(KEY_HISTORY, gson.toJson(historyToString()), token);
+        client.put(KEY_TASK, gson.toJson(getTasks()));
+        client.put(KEY_EPIC, gson.toJson(getEpics()));
+        client.put(KEY_SUBTASK, gson.toJson(getSubTasks()));
+        client.put(KEY_HISTORY, gson.toJson(historyToString()));
     }
 
     public static HttpTaskManager loadFromServer(){
@@ -39,10 +37,10 @@ public class HttpTaskManager extends FileBackedTaskManager{
         Type taskType = new TypeToken<ArrayList<Task>>(){}.getType();
         Type subTaskType = new TypeToken<ArrayList<SubTask>>(){}.getType();
         Type epicType = new TypeToken<ArrayList<Epic>>(){}.getType();
-        List<Task> loadedTasks = manager.gson.fromJson(manager.client.load(manager.KEY_TASK, manager.token),taskType);
-        List<Epic> loadedEpics = manager.gson.fromJson(manager.client.load(manager.KEY_EPIC, manager.token),epicType);
-        List<SubTask> loadedSubTasks = manager.gson.fromJson(manager.client.load(manager.KEY_SUBTASK, manager.token),subTaskType);
-        String history = manager.gson.fromJson(manager.client.load(manager.KEY_HISTORY, manager.token),String.class).replace("[", "").replace("]", "").replace(" ", "");
+        List<Task> loadedTasks = manager.gson.fromJson(manager.client.load(manager.KEY_TASK),taskType);
+        List<Epic> loadedEpics = manager.gson.fromJson(manager.client.load(manager.KEY_EPIC),epicType);
+        List<SubTask> loadedSubTasks = manager.gson.fromJson(manager.client.load(manager.KEY_SUBTASK),subTaskType);
+        String history = manager.gson.fromJson(manager.client.load(manager.KEY_HISTORY),String.class).replace("[", "").replace("]", "").replace(" ", "");
         for (Task task: loadedTasks){
             manager.createTask(task);
         }

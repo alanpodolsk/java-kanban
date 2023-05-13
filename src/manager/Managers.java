@@ -6,7 +6,7 @@ public class Managers {
     }
 
     public static TaskManager getDefault() {
-        TaskManager taskManager = new FileBackedTaskManager();
+        TaskManager taskManager = new HttpTaskManager();
         return taskManager;
     }
 
